@@ -1,41 +1,59 @@
+import { FC } from 'react'
 import styled from 'styled-components'
 
-const NavMenu = () => {
-	return (
-		<Container>
-			<Inner>
-				<Status>
-					<strong>0</strong> items left
-				</Status>
-				<Navbar>
-					<Menu>
-						<MenuItem isActive={true}>All</MenuItem>
-						<MenuItem>Active</MenuItem>
-						<MenuItem>Completed</MenuItem>
-					</Menu>
-				</Navbar>
+import { CountTaskByStatus } from '../types'
 
-				<ClearCompletedButton className='clear-completed hidden'>
-					Clear completed <span>(1)</span>
-				</ClearCompletedButton>
-			</Inner>
-		</Container>
+type Props = {
+	countTasks: CountTaskByStatus
+	handleClear: () => void
+}
+
+const NavMenu: FC<Props> = ({ countTasks, handleClear }) => {
+	const { activeTask, completedTask } = countTasks
+
+	if (activeTask === 0 && completedTask === 0) {
+		return null
+	}
+
+	return (
+		<>
+			<Wrapper>
+				<Inner>
+					<Status>
+						<strong>{activeTask}</strong> items left
+					</Status>
+					<Navbar>
+						<Menu>
+							<MenuItem>All</MenuItem>
+							<MenuItem>Active</MenuItem>
+							<MenuItem>Completed</MenuItem>
+						</Menu>
+					</Navbar>
+					{!!completedTask && (
+						<ClearCompletedButton onClick={handleClear}>
+							Clear completed ({completedTask})
+						</ClearCompletedButton>
+					)}
+				</Inner>
+			</Wrapper>
+		</>
 	)
 }
 
-const Container = styled.footer`
+const Wrapper = styled.footer`
+	height: 24px;
+	display: grid;
+	padding: 0 15px;
+	position: absolute;
+	right: 0;
+	left: 0;
+	bottom: -31px;
 	justify-self: center;
 	align-self: center;
 	color: #777;
-	padding: 0 15px;
-	position: absolute;
-	display: grid;
-	right: 0;
-	bottom: -31px;
-	left: 0;
-	height: 24px;
 	z-index: 1;
 	text-align: center;
+
 	&:before {
 		content: '';
 		position: absolute;
@@ -78,8 +96,6 @@ const MenuItem = styled.li`
 	margin-right: 5px;
 	font-size: 14px;
 	cursor: pointer;
-	color: ${props => (props.isActive ? '#000' : 'relative')};
-	font-weight: ${props => (props.isActive ? '700' : 'relative')};
 `
 
 const ClearCompletedButton = styled.button`
