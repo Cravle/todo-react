@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import styled from 'styled-components'
 
-import Logo from './components/Logo'
 import Todo from './components/Todo'
 
 const App: FC = () => {

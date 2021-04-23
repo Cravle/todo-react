@@ -47,7 +47,6 @@ const getStyles = (variant: checkBoxVariant, checked: boolean) =>
 			${checked && 'color: #000;'}
 		`
 
-// style for disabled
 const Span = styled.span<{ variant: checkBoxVariant; checked: boolean }>`
 	position: absolute;
 	height: 1em;

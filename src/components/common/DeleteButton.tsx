@@ -32,11 +32,6 @@ const Button = styled.button`
 		text-shadow: 0 0 1px #000, 0 0 10px rgba(199, 107, 107, 0.8);
 	}
 `
-// refactor
-// [disabled: ] {
-// 	// refactor
-// 	cursor: not-allowed;
-// 	opacity: 0.4;
-// }
+
 
 export default DeleteButton

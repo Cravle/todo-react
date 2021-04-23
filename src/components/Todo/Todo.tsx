@@ -1,8 +1,8 @@
-import { useState, FC, useMemo } from 'react'
+import { useState, FC, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Status, Task } from '../../types'
+import { Sort, Status, Task } from '../../types'
 import MainInput from './MainInput'
 import NavMenu from '../NavMenu'
 import TaskList from './TaskList'
@@ -10,7 +10,30 @@ import { Checkbox, checkBoxVariant } from '../common'
 import Logo from '../Logo'
 
 const Todo: FC = () => {
-	const [taskList, setTaskList] = useState<Task[]>([])
+	const [taskList, setTaskList] = useState<Task[]>(
+		localStorage.getItem('taskList') ? JSON.parse(localStorage.getItem('taskList') as string) : []
+	)
+	const [selectedSort, setSelectedSort] = useState<Sort>(
+		localStorage.getItem('selectedType')
+			? JSON.parse(localStorage.getItem('selectedType') as string)
+			: Sort.all
+	)
+
+	useEffect(() => {
+		localStorage.taskList = JSON.stringify(taskList)
+		localStorage.selectedType = selectedSort
+	}, [taskList, selectedSort])
+
+	const taskListToRender: Task[] = useMemo(() => {
+		switch (selectedSort) {
+			case Sort.all:
+				return [...taskList]
+			case Sort.active:
+				return taskList.filter(task => task.status === Status.ACTIVE)
+			case Sort.completed:
+				return taskList.filter(task => task.status === Status.COMPLETED)
+		}
+	}, [selectedSort, taskList])
 
 	const countTasks = useMemo(
 		() =>
@@ -63,6 +86,10 @@ const Todo: FC = () => {
 		setTaskList(newTaskList)
 	}
 
+	const handleSort = (sortType: Sort) => {
+		setSelectedSort(sortType)
+	}
+
 	return (
 		<>
 			<Logo />
@@ -79,10 +106,15 @@ const Todo: FC = () => {
 						/>
 						<MainInput handleAddTask={handleAddTask} />
 					</MainContainer>
-					<TaskList state={[taskList, setTaskList]} />
+					<TaskList state={[taskListToRender, setTaskList]} />
 				</Inner>
 			</Wrapper>
-			<NavMenu countTasks={countTasks} handleClear={handleClearAllCompletedTasks} />
+			<NavMenu
+				selectedSort={selectedSort}
+				countTasks={countTasks}
+				handleSort={handleSort}
+				handleClear={handleClearAllCompletedTasks}
+			/>
 		</>
 	)
 }

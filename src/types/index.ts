@@ -3,6 +3,12 @@ export enum Status {
 	COMPLETED = 'completed',
 }
 
+export enum Sort {
+	all,
+	active,
+	completed,
+}
+
 export type Task = {
 	text: string
 	status: Status

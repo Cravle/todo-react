@@ -1,14 +1,16 @@
 import { FC } from 'react'
 import styled from 'styled-components'
 
-import { CountTaskByStatus } from '../types'
+import { CountTaskByStatus, Sort } from '../types'
 
 type Props = {
 	countTasks: CountTaskByStatus
+	selectedSort: Sort
+	handleSort: (selectedSort: Sort) => void
 	handleClear: () => void
 }
 
-const NavMenu: FC<Props> = ({ countTasks, handleClear }) => {
+const NavMenu: FC<Props> = ({ countTasks, selectedSort, handleClear, handleSort }) => {
 	const { activeTask, completedTask } = countTasks
 
 	if (activeTask === 0 && completedTask === 0) {
@@ -24,9 +26,15 @@ const NavMenu: FC<Props> = ({ countTasks, handleClear }) => {
 					</Status>
 					<Navbar>
 						<Menu>
-							<MenuItem>All</MenuItem>
-							<MenuItem>Active</MenuItem>
-							<MenuItem>Completed</MenuItem>
+							<MenuItem isActive={selectedSort === Sort.all} onClick={() => handleSort(Sort.all)}>
+								All
+							</MenuItem>
+							<MenuItem isActive={selectedSort === Sort.active} onClick={() => handleSort(Sort.active)}>
+								Active
+							</MenuItem>
+							<MenuItem isActive={selectedSort === Sort.completed} onClick={() => handleSort(Sort.completed)}>
+								Completed
+							</MenuItem>
 						</Menu>
 					</Navbar>
 					{!!completedTask && (
@@ -91,11 +99,12 @@ const Menu = styled.ul`
 	padding: 5px;
 `
 
-const MenuItem = styled.li`
+const MenuItem = styled.li<{ isActive: boolean }>`
 	display: inline;
 	margin-right: 5px;
 	font-size: 14px;
 	cursor: pointer;
+	${({ isActive }) => isActive && 'font-weight: 700;'}
 `
 
 const ClearCompletedButton = styled.button`
