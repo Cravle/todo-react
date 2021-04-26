@@ -1,22 +1,23 @@
 import { FC } from 'react'
 import styled from 'styled-components'
 
-import { CountTaskByStatus, Sort } from '../types'
+import { TaskStatus, CountTaskByStatus, Sort } from '../types'
 
 type Props = {
 	countTasks: CountTaskByStatus
-	selectedSort: Sort
-	handleSort: (selectedSort: Sort) => void
+	selectedType: Sort
+	handleSelectType: (selectedType: Sort) => void
 	handleClear: () => void
 }
 
-const NavMenu: FC<Props> = ({ countTasks, selectedSort, handleClear, handleSort }) => {
+const NavMenu: FC<Props> = ({ countTasks, selectedType, handleClear, handleSelectType }) => {
 	const { activeTask, completedTask } = countTasks
 
 	if (activeTask === 0 && completedTask === 0) {
 		return null
 	}
 
+	const handleClick = (status: Sort) => () => handleSelectType(status)
 	return (
 		<>
 			<Wrapper>
@@ -26,13 +27,19 @@ const NavMenu: FC<Props> = ({ countTasks, selectedSort, handleClear, handleSort 
 					</Status>
 					<Navbar>
 						<Menu>
-							<MenuItem isActive={selectedSort === Sort.all} onClick={() => handleSort(Sort.all)}>
+							<MenuItem isActive={selectedType === 'all'} onClick={handleClick('all')}>
 								All
 							</MenuItem>
-							<MenuItem isActive={selectedSort === Sort.active} onClick={() => handleSort(Sort.active)}>
+							<MenuItem
+								isActive={selectedType === TaskStatus.ACTIVE}
+								onClick={handleClick(TaskStatus.ACTIVE)}
+							>
 								Active
 							</MenuItem>
-							<MenuItem isActive={selectedSort === Sort.completed} onClick={() => handleSort(Sort.completed)}>
+							<MenuItem
+								isActive={selectedType === TaskStatus.COMPLETED}
+								onClick={handleClick(TaskStatus.COMPLETED)}
+							>
 								Completed
 							</MenuItem>
 						</Menu>

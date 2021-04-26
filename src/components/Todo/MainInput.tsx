@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import React, { FC, KeyboardEvent, useState } from 'react'
+import styled from 'styled-components'
 
 type Props = {
 	handleAddTask: (value: string) => void
@@ -8,11 +8,11 @@ type Props = {
 const MainInput: FC<Props> = ({ handleAddTask }) => {
 	const [value, setValue] = useState<string>('')
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => setValue(event.target.value)
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
 
-	const handleKeyPress = (event: KeyboardEvent): void => {
-		if (event.key === 'Enter') {
-			event.preventDefault()
+	const handleKeyPress = (e: KeyboardEvent) => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
 			handleAddTask(value)
 			setValue('')
 		}

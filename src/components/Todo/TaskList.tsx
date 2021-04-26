@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import styled from 'styled-components'
 
-import { Status, Task } from '../../types'
+import { TaskStatus, Task } from '../../types'
 import TaskItem from './TaskItem'
 
 type Props = {
@@ -14,7 +14,7 @@ const TaskList: FC<Props> = ({ state }) => {
 	const handleChangeStatus = (id: string) => () => {
 		const newTaskList: Task[] = taskList.map(task =>
 			task.id === id
-				? { ...task, status: task.status === Status.COMPLETED ? Status.ACTIVE : Status.COMPLETED }
+				? { ...task, status: task.status === TaskStatus.COMPLETED ? TaskStatus.ACTIVE : TaskStatus.COMPLETED }
 				: task
 		)
 		setTaskList(newTaskList)

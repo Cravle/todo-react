@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { Checkbox, checkBoxVariant } from '../common/'
 import { DeleteButton } from '../common/'
-import { Status, Task } from '../../types'
+import { TaskStatus, Task } from '../../types'
 import TaskInput from './TaskInput'
 
 type Props = {
@@ -25,7 +25,7 @@ const TaskItem: FC<Props> = ({
 		<Wrapper>
 			<StyledCheckBox
 				variant={checkBoxVariant.primary}
-				isChecked={task.status === Status.COMPLETED}
+				isChecked={task.status === TaskStatus.COMPLETED}
 				isHidden={task.isEdit}
 				onChange={handleChangeStatus}
 			/>

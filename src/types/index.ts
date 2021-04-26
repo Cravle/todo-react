@@ -1,17 +1,13 @@
-export enum Status {
-	ACTIVE = 'active',
-	COMPLETED = 'completed',
+export enum TaskStatus {
+	ACTIVE,
+	COMPLETED,
 }
 
-export enum Sort {
-	all,
-	active,
-	completed,
-}
+export type Sort = TaskStatus | 'all'
 
 export type Task = {
 	text: string
-	status: Status
+	status: TaskStatus
 	id: string
 	isEdit: boolean
 }

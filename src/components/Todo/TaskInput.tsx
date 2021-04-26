@@ -1,14 +1,14 @@
 import { ChangeEvent, FC, useState, FocusEvent, KeyboardEvent, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { Status, Task } from '../../types'
+import { TaskStatus, Task } from '../../types'
 
 type Props = {
 	task: Task
 	handleEditTask: (id: string, text: string) => void
 	handleDblClick: () => void
 	isEdit: boolean
-	status: Status
+	status: TaskStatus
 }
 
 const TaskInput: FC<Props> = ({ task, handleEditTask, handleDblClick, isEdit, status }) => {
@@ -55,7 +55,7 @@ const Wrapper = styled.label`
 	align-self: center;
 `
 
-const Input = styled.input<{ disabled: boolean; status: Status }>`
+const Input = styled.input<{ disabled: boolean; status: TaskStatus }>`
 	height: 58px;
 	width: 438px;
 	display: grid;
@@ -64,7 +64,7 @@ const Input = styled.input<{ disabled: boolean; status: Status }>`
 	padding-left: 10px;
 	align-self: center;
 	border: ${({ disabled }) => (disabled ? '1px solid transparent;' : '1px solid #9c9c9c;')};
-	${({ status }) => status === Status.COMPLETED && 'text-decoration:line-through; color: #c0c0c0'};
+	${({ status }) => status === TaskStatus.COMPLETED && 'text-decoration:line-through; color: #c0c0c0'};
 	${({ disabled }) => !disabled && 'z-index: 2'}
 `
 

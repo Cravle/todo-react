@@ -14,7 +14,7 @@ const DeleteButton: FC<Props> = ({ onClick, isDisabled }) => {
 	)
 }
 
-const Button = styled.button`
+const Button = styled.button<{disabled?: boolean}>`
 	display: grid;
 	outline: none;
 	border: none;
@@ -31,7 +31,8 @@ const Button = styled.button`
 		font-size: 24px;
 		text-shadow: 0 0 1px #000, 0 0 10px rgba(199, 107, 107, 0.8);
 	}
-`
+	${({ disabled }) => disabled && 'cursor: not-allowed; opacity: 0.5'}
 
+`
 
 export default DeleteButton
