@@ -1,27 +1,25 @@
 import { useState, FC, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
+import { useHistory } from 'react-router'
 
-import { Sort, TaskStatus, Task } from '../../types'
-import MainInput from './MainInput'
-import NavMenu from '../NavMenu'
-import TaskList from './TaskList'
-import { Checkbox, checkBoxVariant } from '../common'
-import Logo from '../Logo'
+import { Sort, TaskStatus, Task } from '../types'
+import { MainInput, Logo, NavMenu, TaskList } from '../components/Todo/'
+import { Checkbox, checkBoxVariant } from '../components/common'
+import { getItem, setItem } from '../utils'
 
 const Todo: FC = () => {
-	const defaultList = localStorage.getItem('taskList')
-		? JSON.parse(localStorage.getItem('taskList') as string)
-		: []
-	const defaultType: Sort = localStorage.getItem('selectedType')
-		? JSON.parse(localStorage.getItem('selectedType') as string)
-		: 'all'
+	let history = useHistory()
+
+	const defaultList = getItem('taskList') ? getItem('taskList') : []
+
+	const defaultType: Sort = getItem('selectedType') || 'all'
 	const [taskList, setTaskList] = useState<Task[]>(defaultList)
 	const [selectedType, setSelectedType] = useState<Sort>(defaultType)
 
 	useEffect(() => {
-		localStorage.taskList = JSON.stringify(taskList)
-		localStorage.selectedType = JSON.stringify(selectedType)
+		setItem('taskList', JSON.stringify(taskList))
+		setItem('selectedType', JSON.stringify(selectedType))
 	}, [taskList, selectedType])
 
 	const taskListToRender: Task[] = useMemo(
@@ -84,8 +82,12 @@ const Todo: FC = () => {
 		setSelectedType(sortType)
 	}
 
+	if (!localStorage.user) {
+		history.push('/login')
+	}
+
 	return (
-		<>
+		<Container>
 			<Logo />
 			<DecorationBlock />
 			<Wrapper>
@@ -108,9 +110,15 @@ const Todo: FC = () => {
 				handleSelectType={handleSelectType}
 				handleClear={handleClearAllCompletedTasks}
 			/>
-		</>
+		</Container>
 	)
 }
+
+const Container = styled.div`
+	max-width: 500px;
+	margin: 0 auto;
+	position: relative;
+`
 
 const Wrapper = styled.div`
 	box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.15);

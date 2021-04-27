@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import styled from 'styled-components'
 
-import { TaskStatus, CountTaskByStatus, Sort } from '../types'
+import { TaskStatus, CountTaskByStatus, Sort } from '../../types'
 
 type Props = {
 	countTasks: CountTaskByStatus

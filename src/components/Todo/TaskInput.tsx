@@ -57,14 +57,14 @@ const Wrapper = styled.label`
 
 const Input = styled.input<{ disabled: boolean; status: TaskStatus }>`
 	height: 58px;
-	width: 438px;
+	width: 431px;
 	display: grid;
 	font-size: 20px;
 	outline: none;
-	padding-left: 10px;
+	padding-left: 5px;
 	align-self: center;
 	border: ${({ disabled }) => (disabled ? '1px solid transparent;' : '1px solid #9c9c9c;')};
-	${({ status }) => status === TaskStatus.COMPLETED && 'text-decoration:line-through; color: #c0c0c0'};
+	${({ status }) => status === TaskStatus.COMPLETED && 'text-decoration:line-through; color: #c0c0c0;'};
 	${({ disabled }) => !disabled && 'z-index: 2'}
 `
 

@@ -57,6 +57,7 @@ const TaskList: FC<Props> = ({ state }) => {
 
 const List = styled.ul`
 	overflow-y: auto;
+	overflow-x: hidden;
 	max-height: 305px;
 	&::-webkit-scrollbar {
 		width: 0.8em;
@@ -67,7 +68,7 @@ const List = styled.ul`
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background-color: #8d7d77;
+		background-color: #1976d2;
 		border-radius: 3px;
 	}
 `

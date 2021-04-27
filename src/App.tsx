@@ -1,14 +1,14 @@
 import { FC } from 'react'
 import styled from 'styled-components'
 
-import Todo from './components/Todo'
+import Routes from './Routes'
+import Header from './components/Header'
 
 const App: FC = () => {
 	return (
 		<Wrapper>
-			<Container>
-				<Todo />
-			</Container>
+			<Header />
+			<Routes />
 		</Wrapper>
 	)
 }
@@ -18,12 +18,6 @@ const Wrapper = styled.div`
 	height: 100%;
 	width: 100%;
 	position: absolute;
-`
-
-const Container = styled.div`
-	max-width: 500px;
-	margin: 0 auto;
-	position: relative;
 `
 
 export default App
