@@ -3,7 +3,8 @@ import { FormikErrors, useFormik, FormikValues } from 'formik'
 import styled from 'styled-components'
 import arrow from '../images/right.svg'
 import { FC } from 'react'
-import { isLogin } from '../utils'
+import { setItem } from '../utils'
+import { useActions } from '../hooks/useActions'
 
 type User = {
 	email: string
@@ -13,9 +14,7 @@ type User = {
 const AuthPage: FC = () => {
 	const history = useHistory()
 
-	if (isLogin()) {
-		history.push('/')
-	}
+	const { setUser } = useActions()
 
 	const validate = (values: User) => {
 		const errors: FormikErrors<FormikValues> = {}
@@ -36,7 +35,8 @@ const AuthPage: FC = () => {
 		initialValues: { email: '', password: '' },
 		validate,
 		onSubmit: values => {
-			localStorage.setItem('user', JSON.stringify(values))
+			setItem('user', JSON.stringify(values))
+			setUser(values)
 			history.push('/')
 		},
 	})

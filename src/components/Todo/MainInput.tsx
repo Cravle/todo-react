@@ -1,19 +1,17 @@
 import React, { FC, KeyboardEvent, useState } from 'react'
 import styled from 'styled-components'
+import { useActions } from '../../hooks/useActions'
 
-type Props = {
-	handleAddTask: (value: string) => void
-}
-
-const MainInput: FC<Props> = ({ handleAddTask }) => {
+const MainInput: FC = () => {
 	const [value, setValue] = useState<string>('')
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
+	const { addTask } = useActions()
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+		setValue(e.target.value)
 
 	const handleKeyPress = (e: KeyboardEvent) => {
 		if (e.key === 'Enter') {
 			e.preventDefault()
-			handleAddTask(value)
+			addTask(value)
 			setValue('')
 		}
 	}
