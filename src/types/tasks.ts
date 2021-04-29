@@ -1,4 +1,4 @@
-import { Sort, Task } from '.'
+import { Sort, Task, TaskStatus } from '.'
 
 export type TasksState = {
 	taskList: Task[]
@@ -10,10 +10,10 @@ export enum TasksActionTypes {
 	CHANGE_STATUS = 'TODO/TASKS/CHANGE_STATUS',
 	CHANGE_ALL_STATUS = 'TODO/TASKS/CHANGE_ALL_STATUS',
 	CLEAR_COMPLETED = 'TODO/TASKS/CLEAR_COMPLETED',
-	SELECT_FILTER = 'TODO/TASKS/SELECT_FILTER',
+	SET_FILTER = 'TODO/TASKS/SET_FILTER',
 	DELETE_TASK = 'TODO/TASKS/DELETE_TASK',
 	SET_EDIT = 'TODO/TASKS/SET_EDIT',
-	SET_NEW_TEXT = 'TODO/TASKS/SET_NEW_TEXT',
+	UPDATE_TASK_TEXT = 'TODO/TASKS/UPDATE_TASK_TEXT',
 	SET_TASK_LIST = 'TODO/TASKS/SET_TASK_LIST',
 }
 
@@ -29,7 +29,7 @@ export type ChangeStatusAction = {
 
 export type ChangeAllStatusAction = {
 	type: TasksActionTypes.CHANGE_ALL_STATUS
-	isAllTasksCompleted: boolean
+	status: TaskStatus
 }
 
 export type ClearCompletedAction = {
@@ -37,7 +37,7 @@ export type ClearCompletedAction = {
 }
 
 export type SelectFilterAction = {
-	type: TasksActionTypes.SELECT_FILTER
+	type: TasksActionTypes.SET_FILTER
 	filter: Sort
 }
 
@@ -52,7 +52,7 @@ export type SetEditAction = {
 }
 
 export type SetNewTextAction = {
-	type: TasksActionTypes.SET_NEW_TEXT
+	type: TasksActionTypes.UPDATE_TASK_TEXT
 	payload: { id: string; text: string }
 }
 

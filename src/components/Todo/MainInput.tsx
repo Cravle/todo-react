@@ -11,7 +11,10 @@ const MainInput: FC = () => {
 	const handleKeyPress = (e: KeyboardEvent) => {
 		if (e.key === 'Enter') {
 			e.preventDefault()
-			addTask(value)
+			const taskText = value.trim()
+			if (taskText.length) {
+				addTask(value)
+			}
 			setValue('')
 		}
 	}

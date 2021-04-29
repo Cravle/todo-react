@@ -1,14 +1,15 @@
 import { FC } from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import styled from 'styled-components'
-import { useTypedSelector } from '../hooks/useTypedSelector'
+import { getUser } from '../store/selectors/user'
 
 import { clearLS } from '../utils'
 
 const Header: FC = () => {
 	const history = useHistory()
 
-	const { user } = useTypedSelector(state => state.user)
+	const user = useSelector(getUser)
 
 	const handleClick = () => {
 		clearLS()

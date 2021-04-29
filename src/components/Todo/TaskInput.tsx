@@ -14,14 +14,15 @@ const TaskInput: FC<Props> = ({ task, isEdit, status }) => {
 	const [value, setValue] = useState<string>(task.text)
 	const inputEl = useRef<HTMLInputElement | null>(null)
 
-	const { setEdit, setNewText } = useActions()
+	const { setEdit, setNewText, deleteTask } = useActions()
 
 	const handleDblClick = () => {
 		setEdit(task.id)
 	}
 
 	const handleEditTask = () => {
-		setNewText(task.id, value)
+		const text = value.trim()
+		text.length ? setNewText(task.id, text) : deleteTask(task.id)
 	}
 
 	useEffect(() => {

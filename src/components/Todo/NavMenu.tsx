@@ -1,9 +1,10 @@
 import { FC } from 'react'
 import styled from 'styled-components'
 import { useActions } from '../../hooks/useActions'
-import { useTypedSelector } from '../../hooks/useTypedSelector'
 
 import { TaskStatus, CountTaskByStatus, Sort } from '../../types'
+import { useSelector } from 'react-redux'
+import { getFilterType } from '../../store/selectors/tasks'
 
 type Props = {
 	countTasks: CountTaskByStatus
@@ -12,7 +13,7 @@ type Props = {
 const NavMenu: FC<Props> = ({ countTasks }) => {
 	const { activeTask, completedTask } = countTasks
 
-	const { filterType } = useTypedSelector(state => state.tasks)
+	const filterType = useSelector(getFilterType)
 	const { selectFilter, clearCompleted } = useActions()
 
 	if (activeTask === 0 && completedTask === 0) {

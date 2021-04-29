@@ -12,11 +12,6 @@ const initialState: TasksState = {
 export const tasksReducer = (state = initialState, action: TasksAction): TasksState => {
 	switch (action.type) {
 		case TasksActionTypes.ADD_TASK: {
-			const taskText = action.text.trim()
-			if (!taskText.length) {
-				return state
-			} // component
-
 			return {
 				...state,
 				taskList: [
@@ -25,7 +20,7 @@ export const tasksReducer = (state = initialState, action: TasksAction): TasksSt
 						id: uuidv4(),
 						isEdit: false,
 						status: TaskStatus.ACTIVE,
-						text: taskText,
+						text: action.text,
 					},
 				],
 			}
@@ -47,7 +42,7 @@ export const tasksReducer = (state = initialState, action: TasksAction): TasksSt
 		case TasksActionTypes.CHANGE_ALL_STATUS: {
 			const newTaskList = state.taskList.map(task => ({
 				...task,
-				status: !action.isAllTasksCompleted ? TaskStatus.COMPLETED : TaskStatus.ACTIVE, // component
+				status: action.status,
 			}))
 			return { ...state, taskList: newTaskList }
 		}
@@ -55,10 +50,10 @@ export const tasksReducer = (state = initialState, action: TasksAction): TasksSt
 			const newTaskList = state.taskList.filter(task => task.status === TaskStatus.ACTIVE)
 			return { ...state, taskList: newTaskList }
 		}
-		case TasksActionTypes.SELECT_FILTER: // set filter
+		case TasksActionTypes.SET_FILTER:
 			return { ...state, filterType: action.filter }
 		case TasksActionTypes.DELETE_TASK: {
-			const newTaskList = state.taskList.filter(task => task.id !== action.id) // [ids...]
+			const newTaskList = state.taskList.filter(task => task.id !== action.id)
 			return { ...state, taskList: newTaskList }
 		}
 		case TasksActionTypes.SET_EDIT: {
@@ -67,15 +62,12 @@ export const tasksReducer = (state = initialState, action: TasksAction): TasksSt
 			)
 			return { ...state, taskList: newTaskList }
 		}
-		case TasksActionTypes.SET_NEW_TEXT: {
-			// rename: update task text
-			const text = action.payload.text.trim() // coponent
-
-			const newTaskList = text.length
-				? state.taskList.map(task =>
-						task.id === action.payload.id ? { ...task, text, isEdit: false } : task
-				  )
-				: state.taskList.filter(task => task.id !== action.payload.id)
+		case TasksActionTypes.UPDATE_TASK_TEXT: {
+			const newTaskList = state.taskList.map(task =>
+				task.id === action.payload.id
+					? { ...task, text: action.payload.text, isEdit: false }
+					: task
+			)
 
 			return { ...state, taskList: newTaskList }
 		}

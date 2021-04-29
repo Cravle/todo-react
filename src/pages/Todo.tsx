@@ -6,14 +6,16 @@ import { TaskStatus, Task } from '../types'
 import { MainInput, Logo, NavMenu, TaskList } from '../components/Todo/'
 import { Checkbox, checkBoxVariant } from '../components/common'
 import { setItem } from '../utils'
-import { useTypedSelector } from '../hooks/useTypedSelector'
 import { useActions } from '../hooks/useActions'
+import { useSelector } from 'react-redux'
+import { getFilterType, getTaskList } from '../store/selectors/tasks'
 
 const Todo: FC = () => {
 	let history = useHistory()
 
-	const { taskList, filterType } = useTypedSelector(store => store.tasks)
-	const { ChangeAllStatus } = useActions()
+	const taskList = useSelector(getTaskList)
+	const filterType = useSelector(getFilterType)
+	const { changeAllStatus } = useActions()
 
 	useEffect(() => {
 		setItem('taskList', JSON.stringify(taskList))
@@ -46,7 +48,10 @@ const Todo: FC = () => {
 	)
 
 	const handleChangeStatusTasks = () => {
-		ChangeAllStatus(isAllTasksCompleted)
+		const status: TaskStatus = isAllTasksCompleted
+			? TaskStatus.ACTIVE
+			: TaskStatus.COMPLETED
+		changeAllStatus(status)
 	}
 
 	if (!localStorage.user) {

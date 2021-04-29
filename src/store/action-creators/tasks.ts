@@ -1,4 +1,4 @@
-import { Sort, Task } from '../../types'
+import { Sort, Task, TaskStatus } from '../../types'
 import { TasksAction, TasksActionTypes } from '../../types/tasks'
 
 export const addTask = (text: string): TasksAction => {
@@ -9,8 +9,8 @@ export const changeStatus = (id: string): TasksAction => {
 	return { type: TasksActionTypes.CHANGE_STATUS, id }
 }
 
-export const ChangeAllStatus = (isAllTasksCompleted: boolean): TasksAction => {
-	return { type: TasksActionTypes.CHANGE_ALL_STATUS, isAllTasksCompleted }
+export const changeAllStatus = (status: TaskStatus): TasksAction => {
+	return { type: TasksActionTypes.CHANGE_ALL_STATUS, status }
 }
 
 export const clearCompleted = (): TasksAction => {
@@ -18,7 +18,7 @@ export const clearCompleted = (): TasksAction => {
 }
 
 export const selectFilter = (filter: Sort): TasksAction => {
-	return { type: TasksActionTypes.SELECT_FILTER, filter }
+	return { type: TasksActionTypes.SET_FILTER, filter }
 }
 
 export const deleteTask = (id: string): TasksAction => {
@@ -30,7 +30,7 @@ export const setEdit = (id: string): TasksAction => {
 }
 
 export const setNewText = (id: string, text: string): TasksAction => {
-	return { type: TasksActionTypes.SET_NEW_TEXT, payload: { id, text } }
+	return { type: TasksActionTypes.UPDATE_TASK_TEXT, payload: { id, text } }
 }
 
 export const setTaskList = (newTaskList: Task[]): TasksAction => {
