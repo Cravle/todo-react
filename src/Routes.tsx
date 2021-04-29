@@ -1,13 +1,8 @@
 import { FC } from 'react'
-import { Redirect, Route, RouteProps, Switch } from 'react-router'
+import { Redirect, Route, Switch } from 'react-router'
 
 import { AuthPage, Todo } from './pages'
 import { isLogin } from './utils'
-
-type Props = {
-	handleAuthorize: 0
-	isAuthorized: boolean
-}
 
 const PrivateRoute: React.FC<{
 	component: React.FC

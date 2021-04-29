@@ -1,27 +1,22 @@
-import { FC, useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router'
+import { FC } from 'react'
+import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
 import styled from 'styled-components'
+import { getUser } from '../store/selectors/user'
 
-import { clearLS, isLogin } from '../utils'
+import { clearLS } from '../utils'
 
 const Header: FC = () => {
 	const history = useHistory()
-	const location = useLocation()
-	const [isAuthorized, setIsAuthorized] = useState<boolean>(isLogin())
+
+	const user = useSelector(getUser)
+
 	const handleClick = () => {
 		clearLS()
 		history.push('/')
 	}
 
-	useEffect(() => {
-		setIsAuthorized(isLogin())
-	}, [location])
-
-	return (
-		<Container>
-			{isAuthorized && <Button onClick={handleClick}>Log out</Button>}
-		</Container>
-	)
+	return <Container>{!!user && <Button onClick={handleClick}>Log out</Button>}</Container>
 }
 
 const Container = styled.div`

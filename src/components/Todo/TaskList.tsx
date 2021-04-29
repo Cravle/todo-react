@@ -1,55 +1,18 @@
-import { Dispatch, FC, SetStateAction } from 'react'
+import { FC } from 'react'
 import styled from 'styled-components'
+import { Task } from '../../types'
 
-import { TaskStatus, Task } from '../../types'
 import TaskItem from './TaskItem'
 
 type Props = {
-	state: [Task[], Dispatch<SetStateAction<Task[]>>]
+	taskListToRender: Task[]
 }
 
-const TaskList: FC<Props> = ({ state }) => {
-	const [taskList, setTaskList] = state
-
-	const handleChangeStatus = (id: string) => () => {
-		const newTaskList: Task[] = taskList.map(task =>
-			task.id === id
-				? { ...task, status: task.status === TaskStatus.COMPLETED ? TaskStatus.ACTIVE : TaskStatus.COMPLETED }
-				: task
-		)
-		setTaskList(newTaskList)
-	}
-
-	const handleDeleteTask = (id: string) => () => {
-		const newTask: Task[] = taskList.filter(task => task.id !== id)
-		setTaskList(newTask)
-	}
-
-	const handleDblClick = (id: string) => () => {
-		const newTaskList: Task[] = taskList.map(task => (task.id === id ? { ...task, isEdit: true } : task))
-		setTaskList(newTaskList)
-	}
-
-	const handleEditTask = (id: string, text: string) => {
-		text = text.trim()
-
-		const newTaskList: Task[] = text.length
-			? taskList.map(task => (task.id === id ? { ...task, text, isEdit: false } : task))
-			: taskList.filter(task => task.id !== id)
-		setTaskList(newTaskList)
-	}
-
+const TaskList: FC<Props> = ({ taskListToRender }) => {
 	return (
 		<List>
-			{taskList.map((task: any) => (
-				<TaskItem
-					task={task}
-					key={task.id}
-					handleChangeStatus={handleChangeStatus(task.id)}
-					handleDeleteTask={handleDeleteTask(task.id)}
-					handleDblClick={handleDblClick(task.id)}
-					handleEditTask={handleEditTask}
-				/>
+			{taskListToRender.map((task: any) => (
+				<TaskItem task={task} key={task.id} />
 			))}
 		</List>
 	)

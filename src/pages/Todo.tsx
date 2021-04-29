@@ -1,30 +1,30 @@
-import { useState, FC, useMemo, useEffect } from 'react'
+import { FC, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
-import { v4 as uuidv4 } from 'uuid'
 import { useHistory } from 'react-router'
 
-import { Sort, TaskStatus, Task } from '../types'
+import { TaskStatus, Task } from '../types'
 import { MainInput, Logo, NavMenu, TaskList } from '../components/Todo/'
 import { Checkbox, checkBoxVariant } from '../components/common'
-import { getItem, setItem } from '../utils'
+import { setItem } from '../utils'
+import { useActions } from '../hooks/useActions'
+import { useSelector } from 'react-redux'
+import { getFilterType, getTaskList } from '../store/selectors/tasks'
 
 const Todo: FC = () => {
 	let history = useHistory()
 
-	const defaultList = getItem('taskList') ? getItem('taskList') : []
-
-	const defaultType: Sort = getItem('selectedType') || 'all'
-	const [taskList, setTaskList] = useState<Task[]>(defaultList)
-	const [selectedType, setSelectedType] = useState<Sort>(defaultType)
+	const taskList = useSelector(getTaskList)
+	const filterType = useSelector(getFilterType)
+	const { changeAllStatus } = useActions()
 
 	useEffect(() => {
 		setItem('taskList', JSON.stringify(taskList))
-		setItem('selectedType', JSON.stringify(selectedType))
-	}, [taskList, selectedType])
+		setItem('filterType', JSON.stringify(filterType))
+	}, [taskList, filterType])
 
 	const taskListToRender: Task[] = useMemo(
-		() => taskList.filter(task => selectedType === 'all' || task.status === selectedType),
-		[selectedType, taskList]
+		() => taskList.filter(task => filterType === 'all' || task.status === filterType),
+		[filterType, taskList]
 	)
 
 	const countTasks = useMemo(
@@ -47,39 +47,11 @@ const Todo: FC = () => {
 		[countTasks, taskList.length]
 	)
 
-	const handleAddTask = (text: string) => {
-		const taskText = text.trim()
-		if (!taskText.length) {
-			return
-		}
-
-		setTaskList([
-			...taskList,
-			{
-				id: uuidv4(),
-				isEdit: false,
-				status: TaskStatus.ACTIVE,
-				text: taskText,
-			},
-		])
-	}
-
 	const handleChangeStatusTasks = () => {
-		const newTaskList: Task[] = taskList.map(task => ({
-			...task,
-			status: !isAllTasksCompleted ? TaskStatus.COMPLETED : TaskStatus.ACTIVE,
-		}))
-
-		setTaskList(newTaskList)
-	}
-
-	const handleClearAllCompletedTasks = () => {
-		const newTaskList: Task[] = taskList.filter(task => task.status === TaskStatus.ACTIVE)
-		setTaskList(newTaskList)
-	}
-
-	const handleSelectType = (sortType: Sort) => {
-		setSelectedType(sortType)
+		const status: TaskStatus = isAllTasksCompleted
+			? TaskStatus.ACTIVE
+			: TaskStatus.COMPLETED
+		changeAllStatus(status)
 	}
 
 	if (!localStorage.user) {
@@ -99,17 +71,12 @@ const Todo: FC = () => {
 							variant={checkBoxVariant.secondary}
 							onChange={handleChangeStatusTasks}
 						/>
-						<MainInput handleAddTask={handleAddTask} />
+						<MainInput />
 					</MainContainer>
-					<TaskList state={[taskListToRender, setTaskList]} />
+					<TaskList taskListToRender={taskListToRender} />
 				</Inner>
 			</Wrapper>
-			<NavMenu
-				selectedType={selectedType}
-				countTasks={countTasks}
-				handleSelectType={handleSelectType}
-				handleClear={handleClearAllCompletedTasks}
-			/>
+			<NavMenu countTasks={countTasks} />
 		</Container>
 	)
 }

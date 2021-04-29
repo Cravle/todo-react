@@ -5,22 +5,23 @@ import { Checkbox, checkBoxVariant } from '../common/'
 import { DeleteButton } from '../common/'
 import { TaskStatus, Task } from '../../types'
 import TaskInput from './TaskInput'
+import { useActions } from '../../hooks/useActions'
 
 type Props = {
 	task: Task
-	handleChangeStatus: () => void
-	handleDeleteTask: () => void
-	handleDblClick: () => void
-	handleEditTask: (id: string, text: string) => void
 }
 
-const TaskItem: FC<Props> = ({
-	task,
-	handleChangeStatus,
-	handleDeleteTask,
-	handleDblClick,
-	handleEditTask,
-}) => {
+const TaskItem: FC<Props> = ({ task }) => {
+	const { changeStatus, deleteTask } = useActions()
+
+	const handleChangeStatus = () => {
+		changeStatus(task.id)
+	}
+
+	const handleDeleteTask = () => {
+		deleteTask(task.id)
+	}
+
 	return (
 		<Wrapper>
 			<StyledCheckBox
@@ -30,13 +31,7 @@ const TaskItem: FC<Props> = ({
 				onChange={handleChangeStatus}
 			/>
 			<TaskWrapper>
-				<TaskInput
-					status={task.status}
-					handleDblClick={handleDblClick}
-					handleEditTask={handleEditTask}
-					isEdit={task.isEdit}
-					task={task}
-				/>
+				<TaskInput status={task.status} isEdit={task.isEdit} task={task} />
 			</TaskWrapper>
 			<DeleteButton onClick={handleDeleteTask} />
 		</Wrapper>

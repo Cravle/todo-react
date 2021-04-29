@@ -1,23 +1,26 @@
 import { FC } from 'react'
 import styled from 'styled-components'
+import { useActions } from '../../hooks/useActions'
 
 import { TaskStatus, CountTaskByStatus, Sort } from '../../types'
+import { useSelector } from 'react-redux'
+import { getFilterType } from '../../store/selectors/tasks'
 
 type Props = {
 	countTasks: CountTaskByStatus
-	selectedType: Sort
-	handleSelectType: (selectedType: Sort) => void
-	handleClear: () => void
 }
 
-const NavMenu: FC<Props> = ({ countTasks, selectedType, handleClear, handleSelectType }) => {
+const NavMenu: FC<Props> = ({ countTasks }) => {
 	const { activeTask, completedTask } = countTasks
+
+	const filterType = useSelector(getFilterType)
+	const { selectFilter, clearCompleted } = useActions()
 
 	if (activeTask === 0 && completedTask === 0) {
 		return null
 	}
 
-	const handleClick = (status: Sort) => () => handleSelectType(status)
+	const handleClick = (status: Sort) => () => selectFilter(status)
 	return (
 		<>
 			<Wrapper>
@@ -27,17 +30,17 @@ const NavMenu: FC<Props> = ({ countTasks, selectedType, handleClear, handleSelec
 					</Status>
 					<Navbar>
 						<Menu>
-							<MenuItem isActive={selectedType === 'all'} onClick={handleClick('all')}>
+							<MenuItem isActive={filterType === 'all'} onClick={handleClick('all')}>
 								All
 							</MenuItem>
 							<MenuItem
-								isActive={selectedType === TaskStatus.ACTIVE}
+								isActive={filterType === TaskStatus.ACTIVE}
 								onClick={handleClick(TaskStatus.ACTIVE)}
 							>
 								Active
 							</MenuItem>
 							<MenuItem
-								isActive={selectedType === TaskStatus.COMPLETED}
+								isActive={filterType === TaskStatus.COMPLETED}
 								onClick={handleClick(TaskStatus.COMPLETED)}
 							>
 								Completed
@@ -45,7 +48,7 @@ const NavMenu: FC<Props> = ({ countTasks, selectedType, handleClear, handleSelec
 						</Menu>
 					</Navbar>
 					{!!completedTask && (
-						<ClearCompletedButton onClick={handleClear}>
+						<ClearCompletedButton onClick={clearCompleted}>
 							Clear completed ({completedTask})
 						</ClearCompletedButton>
 					)}
