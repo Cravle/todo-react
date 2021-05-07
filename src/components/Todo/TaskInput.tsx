@@ -1,84 +1,104 @@
-import { ChangeEvent, FC, useState, KeyboardEvent, useRef, useEffect } from 'react'
+import {
+  ChangeEvent,
+  FC,
+  useState,
+  KeyboardEvent,
+  useRef,
+  useEffect,
+} from 'react'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useActions } from '../../hooks/useActions'
+import useActions from '../../hooks/useActions'
+import { getFilterType } from '../../redux/selectors/tasks'
 
 import { TaskStatus, Task } from '../../types'
 
 type Props = {
-	task: Task
-	isEdit: boolean
-	status: TaskStatus
+  task: Task
+  isEdit: boolean
+  status: TaskStatus
 }
 
 const TaskInput: FC<Props> = ({ task, isEdit, status }) => {
-	const [value, setValue] = useState<string>(task.text)
-	const inputEl = useRef<HTMLInputElement | null>(null)
+  const [value, setValue] = useState<string>(task.text)
+  const inputEl = useRef<HTMLInputElement | null>(null)
 
-	const { setEdit, setNewText, deleteTask } = useActions()
+  const filterType = useSelector(getFilterType)
 
-	const handleDblClick = () => {
-		setEdit(task.id)
-	}
+  const { setEdit, removeTask, updateTask, getTasks } = useActions()
 
-	const handleEditTask = () => {
-		const text = value.trim()
-		text.length ? setNewText(task.id, text) : deleteTask(task.id)
-	}
+  const handleDblClick = () => {
+    setEdit(task.id)
+  }
 
-	useEffect(() => {
-		if (isEdit) {
-			inputEl.current?.focus()
-		}
-	}, [isEdit])
+  const handleEditTask = async () => {
+    const text = value.trim()
+    if (text.length) {
+      await updateTask(task.id, text, task.status)
+    } else {
+      await removeTask(task.id)
+    }
 
-	const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
-		setValue(event.target.value)
+    getTasks(filterType)
+  }
 
-	const handleBlur = () => handleEditTask()
+  useEffect(() => {
+    if (isEdit) {
+      inputEl.current?.focus()
+    }
+  }, [isEdit])
 
-	const handleKeyPress = (event: KeyboardEvent): void => {
-		if (event.key === 'Enter') {
-			event.preventDefault()
-			handleEditTask()
-		}
-	}
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
+    setValue(event.target.value)
 
-	return (
-		<Wrapper onDoubleClick={handleDblClick}>
-			<Input
-				ref={inputEl}
-				disabled={!isEdit}
-				status={status}
-				onKeyPress={handleKeyPress}
-				onBlur={handleBlur}
-				onChange={handleChange}
-				value={value}
-			/>
-		</Wrapper>
-	)
+  const handleBlur = () => handleEditTask()
+
+  const handleKeyPress = (event: KeyboardEvent): void => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      handleEditTask()
+    }
+  }
+
+  return (
+    <Wrapper onDoubleClick={handleDblClick}>
+      <Input
+        ref={inputEl}
+        disabled={!isEdit}
+        status={status}
+        onKeyPress={handleKeyPress}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        value={value}
+      />
+    </Wrapper>
+  )
 }
 
 const Wrapper = styled.label`
-	position: absolute;
-	display: grid;
-	height: 58px;
-	width: 438px;
-	align-self: center;
+  position: absolute;
+  display: grid;
+  height: 58px;
+  width: 438px;
+  align-self: center;
+  background-color: #fff;
 `
 
 const Input = styled.input<{ disabled: boolean; status: TaskStatus }>`
-	height: 58px;
-	width: 431px;
-	display: grid;
-	font-size: 20px;
-	outline: none;
-	padding-left: 5px;
-	align-self: center;
-	border: ${({ disabled }) =>
-		disabled ? '1px solid transparent;' : '1px solid #9c9c9c;'};
-	${({ status }) =>
-		status === TaskStatus.COMPLETED && 'text-decoration:line-through; color: #c0c0c0;'};
-	${({ disabled }) => !disabled && 'z-index: 2'}
+  height: 58px;
+  width: 431px;
+  display: grid;
+  font-size: 20px;
+  outline: none;
+  padding-left: 5px;
+  align-self: center;
+  background-color: transparent;
+  border: ${({ disabled }) =>
+    disabled ? '1px solid transparent;' : '1px solid #9c9c9c;'};
+  ${({ status }) =>
+    status === TaskStatus.COMPLETED &&
+    'text-decoration:line-through; color: #c0c0c0;'};
+  ${({ disabled }) => !disabled && 'z-index: 2'}
 `
 
 export default TaskInput

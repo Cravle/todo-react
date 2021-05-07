@@ -1,73 +1,142 @@
-import { Sort, Task, TaskStatus } from '.'
+import { CountTasks, Task, TaskStatus } from '.'
 
 export type TasksState = {
-	taskList: Task[]
-	filterType: Sort
+  taskList: Task[]
+  filterType: string
+  count: { active: number; completed: number }
 }
 
 export enum TasksActionTypes {
-	ADD_TASK = 'TODO/TASKS/ADD_TASK',
-	CHANGE_STATUS = 'TODO/TASKS/CHANGE_STATUS',
-	CHANGE_ALL_STATUS = 'TODO/TASKS/CHANGE_ALL_STATUS',
-	CLEAR_COMPLETED = 'TODO/TASKS/CLEAR_COMPLETED',
-	SET_FILTER = 'TODO/TASKS/SET_FILTER',
-	DELETE_TASK = 'TODO/TASKS/DELETE_TASK',
-	SET_EDIT = 'TODO/TASKS/SET_EDIT',
-	UPDATE_TASK_TEXT = 'TODO/TASKS/UPDATE_TASK_TEXT',
-	SET_TASK_LIST = 'TODO/TASKS/SET_TASK_LIST',
-}
+  SET_FILTER = 'TODO/TASKS/SET_FILTER',
+  SET_EDIT = 'TODO/TASKS/SET_EDIT',
 
-export type AddTaskAction = {
-	type: TasksActionTypes.ADD_TASK
-	text: string
-}
+  GET_TASK_REQUEST = 'TODO/TASKS/GET_TASK_REQUEST',
+  GET_TASK_SUCCESS = 'TODO/TASKS/GET_TASK_SUCCESS',
+  GET_TASK_FAILED = 'TODO/TASKS/GET_TASK_FAILED',
 
-export type ChangeStatusAction = {
-	type: TasksActionTypes.CHANGE_STATUS
-	id: string
-}
+  REMOVE_TASK_REQUEST = 'TODO/TASKS/REMOVE_TASK_REQUEST',
+  REMOVE_TASK_SUCCESS = 'TODO/TASKS/REMOVE_TASK_SUCCESS',
+  REMOVE_TASK_FAILED = 'TODO/TASKS/REMOVE_TASK_FAILED',
 
-export type ChangeAllStatusAction = {
-	type: TasksActionTypes.CHANGE_ALL_STATUS
-	status: TaskStatus
-}
+  REMOVE_COMPLETED_TASK_REQUEST = 'TODO/TASKS/REMOVE_COMPLETED_TASK_REQUEST',
+  REMOVE_COMPLETED_TASK_SUCCESS = 'TODO/TASKS/REMOVE_COMPLETED_TASK_SUCCESS',
+  REMOVE_COMPLETED_TASK_FAILED = 'TODO/TASKS/REMOVE_COMPLETED_TASK_FAILED',
 
-export type ClearCompletedAction = {
-	type: TasksActionTypes.CLEAR_COMPLETED
+  CREATE_TASK_REQUEST = 'TODO/TASKS/CREATE_TASK_REQUEST',
+  CREATE_TASK_SUCCESS = 'TODO/TASKS/CREATE_TASK_SUCCESS',
+  CREATE_TASK_FAILED = 'TODO/TASKS/CREATE_TASK_FAILED',
+
+  UPDATE_TASK_REQUEST = 'TODO/TASKS/UPDATE_TASK_REQUEST',
+  UPDATE_TASK_SUCCESS = 'TODO/TASKS/UPDATE_TASK_SUCCESS',
+  UPDATE_TASK_FAILED = 'TODO/TASKS/UPDATE_TASK_FAILED',
+
+  CHANGE_STATUS_TASK_REQUEST = 'TODO/TASKS/CHANGE_STATUS_TASK_REQUEST',
+  CHANGE_STATUS_TASK_SUCCESS = 'TODO/TASKS/CHANGE_STATUS_TASK_SUCCESS',
+  CHANGE_STATUS_TASK_FAILED = 'TODO/TASKS/CHANGE_STATUS_TASK_FAILED',
 }
 
 export type SelectFilterAction = {
-	type: TasksActionTypes.SET_FILTER
-	filter: Sort
-}
-
-export type DeleteTaskAction = {
-	type: TasksActionTypes.DELETE_TASK
-	id: string
+  type: TasksActionTypes.SET_FILTER
+  filter: string
 }
 
 export type SetEditAction = {
-	type: TasksActionTypes.SET_EDIT
-	id: string
+  type: TasksActionTypes.SET_EDIT
+  id: string
 }
 
-export type SetNewTextAction = {
-	type: TasksActionTypes.UPDATE_TASK_TEXT
-	payload: { id: string; text: string }
+export type GetTaskRequest = {
+  type: TasksActionTypes.GET_TASK_REQUEST
 }
 
-export type SetTaskList = {
-	type: TasksActionTypes.SET_TASK_LIST
-	newTaskList: Task[]
+export type GetTaskSuccess = {
+  type: TasksActionTypes.GET_TASK_SUCCESS
+  newTaskList: Task[]
+  count: CountTasks
+}
+
+export type GetTaskFailed = {
+  type: TasksActionTypes.GET_TASK_FAILED
+}
+
+export type RemoveTaskRequest = {
+  type: TasksActionTypes.REMOVE_TASK_REQUEST
+}
+
+export type RemoveTaskSuccess = {
+  type: TasksActionTypes.REMOVE_TASK_SUCCESS
+}
+
+export type RemoveTaskFailed = {
+  type: TasksActionTypes.REMOVE_TASK_FAILED
+}
+
+export type RemoveCompletedTaskRequest = {
+  type: TasksActionTypes.REMOVE_COMPLETED_TASK_REQUEST
+}
+
+export type RemoveCompletedTaskSuccess = {
+  type: TasksActionTypes.REMOVE_COMPLETED_TASK_SUCCESS
+}
+
+export type RemoveCompletedTaskFailed = {
+  type: TasksActionTypes.REMOVE_COMPLETED_TASK_FAILED
+}
+
+export type CreateTaskRequest = {
+  type: TasksActionTypes.CREATE_TASK_REQUEST
+}
+
+export type CreateTaskSuccess = {
+  type: TasksActionTypes.CREATE_TASK_SUCCESS
+}
+
+export type CreateTaskFailed = {
+  type: TasksActionTypes.CREATE_TASK_FAILED
+}
+
+export type UpdateTaskRequest = {
+  type: TasksActionTypes.UPDATE_TASK_REQUEST
+}
+
+export type UpdateTaskSuccess = {
+  type: TasksActionTypes.UPDATE_TASK_SUCCESS
+}
+
+export type UpdateTaskFailed = {
+  type: TasksActionTypes.UPDATE_TASK_FAILED
+}
+
+export type ChangeStatusTaskRequest = {
+  type: TasksActionTypes.CHANGE_STATUS_TASK_REQUEST
+}
+
+export type ChangeStatusTaskSuccess = {
+  type: TasksActionTypes.CHANGE_STATUS_TASK_SUCCESS
+}
+
+export type ChangeStatusTaskFailed = {
+  type: TasksActionTypes.CHANGE_STATUS_TASK_FAILED
 }
 
 export type TasksAction =
-	| AddTaskAction
-	| ChangeStatusAction
-	| ClearCompletedAction
-	| SelectFilterAction
-	| DeleteTaskAction
-	| SetEditAction
-	| SetNewTextAction
-	| ChangeAllStatusAction
-	| SetTaskList
+  | SelectFilterAction
+  | SetEditAction
+  | GetTaskRequest
+  | GetTaskSuccess
+  | GetTaskFailed
+  | RemoveTaskRequest
+  | RemoveTaskSuccess
+  | RemoveTaskFailed
+  | RemoveCompletedTaskRequest
+  | RemoveCompletedTaskSuccess
+  | RemoveCompletedTaskFailed
+  | CreateTaskRequest
+  | CreateTaskSuccess
+  | CreateTaskFailed
+  | UpdateTaskRequest
+  | UpdateTaskSuccess
+  | UpdateTaskFailed
+  | ChangeStatusTaskRequest
+  | ChangeStatusTaskSuccess
+  | ChangeStatusTaskFailed

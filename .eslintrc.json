@@ -1,0 +1,44 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "extends": [
+    "airbnb",
+    "prettier",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["react", "prettier", "@typescript-eslint"],
+  "rules": {
+    "import/extensions": [
+      "off",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["off"],
+    "react/jsx-filename-extension": ["off", { "extensions": [".tsx"] }],
+    "react/prop-types": "off",
+    "arrow-body-style": ["off", "never"],
+    "react/react-in-jsx-scope": "off",
+    "no-unused-vars": [
+      "off",
+      { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
+    ],
+    "no-underscore-dangle": "off",
+    "no-unused-expression": "off",
+    "no-shadow": "off",
+    "import/prefer-default-export": "off",
+    "react/destructuring-assignment": "off"
+  }
+}
