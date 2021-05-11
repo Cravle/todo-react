@@ -6,10 +6,8 @@ import {
   useRef,
   useEffect,
 } from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import useActions from '../../hooks/useActions'
-import { getFilterType } from '../../redux/selectors/tasks'
 
 import { TaskStatus, Task } from '../../types'
 
@@ -23,23 +21,19 @@ const TaskInput: FC<Props> = ({ task, isEdit, status }) => {
   const [value, setValue] = useState<string>(task.text)
   const inputEl = useRef<HTMLInputElement | null>(null)
 
-  const filterType = useSelector(getFilterType)
-
-  const { setEdit, removeTask, updateTask, getTasks } = useActions()
+  const { setEdit, removeTaskRequest, updateTaskRequest } = useActions()
 
   const handleDblClick = () => {
     setEdit(task.id)
   }
 
-  const handleEditTask = async () => {
+  const handleEditTask = () => {
     const text = value.trim()
     if (text.length) {
-      await updateTask(task.id, text, task.status)
+      updateTaskRequest(task.id, text, task.status)
     } else {
-      await removeTask(task.id)
+      removeTaskRequest(task.id)
     }
-
-    getTasks(filterType)
   }
 
   useEffect(() => {

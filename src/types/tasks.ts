@@ -1,4 +1,4 @@
-import { CountTasks, Task, TaskStatus } from '.'
+import { CountTasks, Task } from '.'
 
 export type TasksState = {
   taskList: Task[]
@@ -47,6 +47,9 @@ export type SetEditAction = {
 
 export type GetTaskRequest = {
   type: TasksActionTypes.GET_TASK_REQUEST
+  payload: {
+    status: string
+  }
 }
 
 export type GetTaskSuccess = {
@@ -61,6 +64,9 @@ export type GetTaskFailed = {
 
 export type RemoveTaskRequest = {
   type: TasksActionTypes.REMOVE_TASK_REQUEST
+  payload: {
+    id: string
+  }
 }
 
 export type RemoveTaskSuccess = {
@@ -73,6 +79,9 @@ export type RemoveTaskFailed = {
 
 export type RemoveCompletedTaskRequest = {
   type: TasksActionTypes.REMOVE_COMPLETED_TASK_REQUEST
+  payload: {
+    ids: string
+  }
 }
 
 export type RemoveCompletedTaskSuccess = {
@@ -85,6 +94,9 @@ export type RemoveCompletedTaskFailed = {
 
 export type CreateTaskRequest = {
   type: TasksActionTypes.CREATE_TASK_REQUEST
+  payload: {
+    text: string
+  }
 }
 
 export type CreateTaskSuccess = {
@@ -97,6 +109,11 @@ export type CreateTaskFailed = {
 
 export type UpdateTaskRequest = {
   type: TasksActionTypes.UPDATE_TASK_REQUEST
+  payload: {
+    id: string
+    text: string
+    status: string
+  }
 }
 
 export type UpdateTaskSuccess = {
@@ -109,6 +126,10 @@ export type UpdateTaskFailed = {
 
 export type ChangeStatusTaskRequest = {
   type: TasksActionTypes.CHANGE_STATUS_TASK_REQUEST
+  payload: {
+    ids: string[]
+    status: string
+  }
 }
 
 export type ChangeStatusTaskSuccess = {

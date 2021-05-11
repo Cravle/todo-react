@@ -2,7 +2,6 @@ import { FC } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { getTaskList } from '../../redux/selectors/tasks'
-import { Task } from '../../types'
 
 import TaskItem from './TaskItem'
 

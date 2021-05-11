@@ -30,3 +30,8 @@ export type User = {
   email: string
   password: string
 }
+
+export type TaskResponse = {
+  tasks: TaskDb[]
+  count: CountTasks
+}
