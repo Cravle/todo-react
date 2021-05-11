@@ -1,9 +1,9 @@
 import { FC, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
-import { useHistory, useParams, useLocation } from 'react-router'
+import { useHistory, useLocation } from 'react-router'
 import { useSelector } from 'react-redux'
 
-import { TaskStatus, Task } from '../types'
+import { TaskStatus } from '../types'
 import { MainInput, Logo, NavMenu, TaskList } from '../components/Todo'
 import { Checkbox, checkBoxVariant } from '../components/common'
 import useActions from '../hooks/useActions'
@@ -20,12 +20,12 @@ const Todo: FC = () => {
   const status = query.get('status') || 'all'
   const taskList = useSelector(getTaskList)
   const filterType = useSelector(getFilterType)
-  const { changeAllStatus, getTasks, selectFilter } = useActions()
+  const { changeAllStatusRequest, getTaskRequest, selectFilter } = useActions()
   const countTasks = useSelector(getCountTasks)
 
   useEffect(() => {
     selectFilter(status)
-    getTasks(filterType)
+    getTaskRequest(filterType)
   }, [status])
 
   // const taskListToRender: Task[] = useMemo(
@@ -41,14 +41,13 @@ const Todo: FC = () => {
     [countTasks, taskList.length]
   )
 
-  const handleChangeStatusTasks = async () => {
+  const handleChangeStatusTasks = () => {
     const status: TaskStatus = isAllTasksCompleted
       ? TaskStatus.ACTIVE
       : TaskStatus.COMPLETED
 
     const ids = taskList.map((task) => task.id)
-    await changeAllStatus(ids, status)
-    getTasks(filterType)
+    changeAllStatusRequest(ids, status)
   }
 
   if (!localStorage.user) {

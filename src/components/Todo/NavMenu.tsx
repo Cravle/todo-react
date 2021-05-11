@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
 import useActions from '../../hooks/useActions'
-import { TaskStatus, CountTaskByStatus, Task } from '../../types'
+import { TaskStatus } from '../../types'
 import {
   getCountTasks,
   getFilterType,
@@ -15,20 +15,19 @@ const NavMenu: FC = () => {
   const taskList = useSelector(getTaskList)
   const filterType = useSelector(getFilterType)
   const { active, completed } = useSelector(getCountTasks)
-  const { selectFilter, removeCompleted, getTasks } = useActions()
+  const { selectFilter, removeCompletedTaskRequest } = useActions()
 
   if (active === 0 && completed === 0) {
     return null
   }
 
-  const handleClear = async () => {
+  const handleClear = () => {
     const ids: string[] = []
     taskList.forEach((task) => {
       return task.status === TaskStatus.COMPLETED && ids.push(`"${task.id}"`)
     })
     const str = `[${ids}]`
-    await removeCompleted(str)
-    getTasks(filterType)
+    removeCompletedTaskRequest(str)
   }
 
   const handleClick = (status: string) => () => selectFilter(status)

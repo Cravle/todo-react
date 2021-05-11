@@ -1,33 +1,28 @@
 import { FC } from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
 
 import { Checkbox, checkBoxVariant, DeleteButton } from '../common'
 import { TaskStatus, Task } from '../../types'
 import TaskInput from './TaskInput'
 import useActions from '../../hooks/useActions'
-import { getFilterType } from '../../redux/selectors/tasks'
 
 type Props = {
   task: Task
 }
 
 const TaskItem: FC<Props> = ({ task }) => {
-  const { updateTask, removeTask, getTasks } = useActions()
-  const filterType = useSelector(getFilterType)
+  const { updateTaskRequest, removeTaskRequest } = useActions()
 
-  const handleChangeStatus = async () => {
+  const handleChangeStatus = () => {
     const status =
       task.status === TaskStatus.ACTIVE
         ? TaskStatus.COMPLETED
         : TaskStatus.ACTIVE
-    await updateTask(task.id, task.text, status)
-    getTasks(filterType)
+    updateTaskRequest(task.id, task.text, status)
   }
 
   const handleDeleteTask = async () => {
-    await removeTask(task.id)
-    getTasks(filterType)
+    await removeTaskRequest(task.id)
   }
 
   return (

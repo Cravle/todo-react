@@ -6,7 +6,7 @@ import { getFilterType } from '../../redux/selectors/tasks'
 
 const MainInput: FC = () => {
   const [value, setValue] = useState<string>('')
-  const { createTask, getTasks } = useActions()
+  const { createTaskRequest, getTaskRequest } = useActions()
   const filterType = useSelector(getFilterType)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -18,8 +18,8 @@ const MainInput: FC = () => {
     if (e.key === 'Enter' && taskText) {
       e.preventDefault()
 
-      await createTask(value)
-      getTasks(filterType)
+      await createTaskRequest(value)
+      getTaskRequest(filterType)
       setValue('')
     }
   }
