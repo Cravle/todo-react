@@ -17,6 +17,11 @@
   ],
   "plugins": ["react", "prettier", "@typescript-eslint"],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
+    "import/no-unresolved": 0,
+    "spaced-comment": ["warn", "always"],
+    "array-callback-return": "warn",
+    "consistent-return": "warn",
     "import/extensions": [
       "off",
       "ignorePackages",
@@ -39,6 +44,7 @@
     "no-unused-expression": "off",
     "no-shadow": "off",
     "import/prefer-default-export": "off",
-    "react/destructuring-assignment": "off"
+    "react/destructuring-assignment": "off",
+    "import/newline-after-import": ["warn", { "count": 2 }]
   }
 }

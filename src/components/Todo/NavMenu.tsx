@@ -3,34 +3,77 @@ import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
-import useActions from '../../hooks/useActions'
-import { TaskStatus } from '../../types'
+import useActions from '@hooks//useActions'
+import { TaskStatus } from '@type//'
 import {
   getCountTasks,
   getFilterType,
   getTaskList,
-} from '../../redux/selectors/tasks'
+} from '@selectors//tasks'
+
+const ALL = 'all'
+const ACTIVE = 'active'
+const COMPLETED = 'completed'
+
+type Filters = { id: number; url: string; label: string }
+
+const filters: Filters[] = [
+  {
+    id: 1,
+    url: '/tasks',
+    label: ALL,
+  },
+  {
+    id: 2,
+    url: '/tasks?status=active',
+    label: ACTIVE,
+  },
+  {
+    id: 3,
+    url: '/tasks?status=completed',
+    label: COMPLETED,
+  },
+]
+
+const renderFilters = (
+  handleClick: (status: string) => void,
+  filterType: string
+) => {
+  return filters.map((filter) => {
+    return (
+      <MenuItem
+        isActive={filterType === filter.label}
+        key={filter.id}
+        onClick={() => handleClick(filter.label)}
+      >
+        <Link to={filter.url}>{filter.label}</Link>
+      </MenuItem>
+    )
+  })
+}
 
 const NavMenu: FC = () => {
   const taskList = useSelector(getTaskList)
   const filterType = useSelector(getFilterType)
   const { active, completed } = useSelector(getCountTasks)
+
   const { selectFilter, removeCompletedTaskRequest } = useActions()
 
-  if (active === 0 && completed === 0) {
-    return null
-  }
-
   const handleClear = () => {
-    const ids: string[] = []
-    taskList.forEach((task) => {
-      return task.status === TaskStatus.COMPLETED && ids.push(`"${task.id}"`)
+    const ids: (string | undefined)[] = taskList.map((task) => {
+      if (task.status === TaskStatus.COMPLETED) return task.id as string
     })
-    const str = `[${ids}]`
-    removeCompletedTaskRequest(str)
+
+    const stringIds = JSON.stringify(ids)
+    removeCompletedTaskRequest(stringIds)
   }
 
   const handleClick = (status: string) => () => selectFilter(status)
+
+  if (!active && !completed) {
+    return null
+  }
+
   return (
     <>
       <Wrapper>
@@ -39,26 +82,7 @@ const NavMenu: FC = () => {
             <strong>{active}</strong> items left
           </Status>
           <Navbar>
-            <Menu>
-              <MenuItem
-                isActive={filterType === 'all'}
-                onClick={handleClick('all')}
-              >
-                <Link to="/tasks">All</Link>
-              </MenuItem>
-              <MenuItem
-                isActive={filterType === TaskStatus.ACTIVE}
-                onClick={handleClick(TaskStatus.ACTIVE)}
-              >
-                <Link to="/tasks?status=active">Active</Link>
-              </MenuItem>
-              <MenuItem
-                isActive={filterType === TaskStatus.COMPLETED}
-                onClick={handleClick(TaskStatus.COMPLETED)}
-              >
-                <Link to="/tasks?status=completed">Completed</Link>
-              </MenuItem>
-            </Menu>
+            <Menu>{renderFilters(handleClick, filterType)}</Menu>
           </Navbar>
           {!!completed && filterType !== 'active' && (
             <ClearCompletedButton onClick={handleClear}>
@@ -122,7 +146,7 @@ const Menu = styled.ul`
   padding: 5px;
 `
 
-const MenuItem = styled.li<{ isActive: boolean }>`
+const MenuItem = styled.li<{ isActive: boolean; key: number }>`
   display: inline;
   margin-right: 5px;
   font-size: 14px;

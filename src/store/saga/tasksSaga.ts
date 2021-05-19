@@ -1,28 +1,37 @@
 import { put, takeEvery, call, select } from 'redux-saga/effects'
 
-import { getFilterType } from '../selectors/tasks'
-import { Task, TaskDb, TaskResponse } from '../../types'
-import * as taskTypes from '../../types/tasks'
-
-import { tasksAPI } from '../../api'
-import * as actions from '../actions/tasks'
+import { getFilterType } from '@selectors//tasks'
+import { Task, TaskResponse } from '@type//'
+import * as taskTypes from '@type//tasks'
+import { tasksAPI } from '@api//'
+import * as actions from '@actions//tasks'
+import { refreshTokenRequest } from '@actions//user'
 
 function* getTasksWorker(action: taskTypes.GetTaskRequest) {
   try {
+    console.log(action.payload.status, 'action.payload.status')
     const res: TaskResponse = yield call(
       tasksAPI.getTasks,
       action.payload.status
     )
 
-    const taskList: Task[] = res.tasks.map((task: TaskDb) => ({
+    const taskList: Task[] = res.tasks.map((task: Task) => ({
       text: task.text,
       status: task.status,
       id: task.id,
       isEdit: false,
     }))
 
-    yield put(actions.getTaskSuccess(taskList, res.count))
+    const payload = {
+      taskList,
+      count: res.count,
+    }
+
+    yield put(actions.getTaskSuccess(payload))
   } catch (e) {
+    if (e?.response?.status === 401) {
+      yield put(refreshTokenRequest())
+    }
     yield put(actions.getTaskFailed())
   }
 }
@@ -41,6 +50,9 @@ function* updateTasksWorker(action: taskTypes.UpdateTaskRequest) {
 
     yield put(actions.getTaskRequest(filterType))
   } catch (e) {
+    if (e?.response?.status === 401) {
+      yield put(refreshTokenRequest())
+    }
     yield put(actions.updateTaskFailed())
   }
 }

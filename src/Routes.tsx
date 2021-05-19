@@ -1,16 +1,18 @@
 import { FC } from 'react'
+import { useSelector } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router'
 
-import { AuthPage, Todo } from './pages'
-import { isLogin } from './utils'
+import { getIsAuth } from '@selectors//user'
+import { AuthPage, Todo, SignUp } from './pages'
 
-const PrivateRoute: React.FC<{
-  component: React.FC
+const PrivateRoute: FC<{
+  component: FC
   path: string
   exact: boolean
-}> = (props) => {
-  return isLogin() ? (
-    <Route path={props.path} exact={props.exact} component={props.component} />
+}> = ({ path, exact, component }) => {
+  const isAuth = useSelector(getIsAuth)
+  return isAuth ? (
+    <Route path={path} exact={exact} component={component} />
   ) : (
     <Redirect to="/login" />
   )
@@ -21,6 +23,7 @@ const Routes: FC = () => {
     <Switch>
       <PrivateRoute path="/tasks" component={Todo} exact />
       <Route exact path="/login" component={AuthPage} />
+      <Route exact path="/register" component={SignUp} />
       <Redirect to="/tasks" />
     </Switch>
   )

@@ -1,15 +1,15 @@
-import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
 
 import App from './App'
-import { store } from './redux'
+import { history, store } from './store'
 
 const Root = () => {
   return (
     <Provider store={store}>
-      <Router>
+      <ConnectedRouter history={history}>
         <App />
-      </Router>
+      </ConnectedRouter>
     </Provider>
   )
 }

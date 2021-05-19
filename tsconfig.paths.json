@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@components/*": ["src/components*"],
+      "@Todo/*": ["src/components/Todo*"],
+      "@hooks/*": ["src/hooks*"],
+      "@pages/*": ["src/pages*"],
+      "@store/*": ["src/store*"],
+      "@types/*": ["src/types*"],
+      "@utils/*": ["src/utils"],
+      "@selectors/*": ["src/store/selectors*"],
+      "@actions/*": ["src/store/actions*"],
+      "@api/*": ["src/api*"]
+    }
+  }
+}

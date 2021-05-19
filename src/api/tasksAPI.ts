@@ -1,36 +1,72 @@
-import axios from 'axios'
-
-const instance = axios.create({
-  baseURL: 'http://localhost:8000/',
-})
+import Axios from '.'
 
 const tasksAPI = {
   getTasks: (status: string) => {
     return status !== 'all'
-      ? instance.get(`tasks?status=${status}`).then((res) => res.data)
-      : instance.get(`tasks`).then((res) => res.data)
+      ? Axios.get(`tasks?status=${status}`, {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
+        }).then((res) => res.data)
+      : Axios.get(`tasks`, {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
+        }).then((res) => res.data)
   },
   updateTask: (id: string, text: string, status: string) => {
-    return instance.put('task/update', {
-      id,
-      text,
-      status,
-    })
+    return Axios.put(
+      'task/update',
+      {
+        id,
+        text,
+        status,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      }
+    )
   },
   addTask: (text: string, status: string) => {
-    return instance.post('create-task', {
-      text,
-      status,
-    })
+    return Axios.post(
+      'create-task',
+      {
+        text,
+        status,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      }
+    )
   },
   deleteTask: (id: string) => {
-    return instance.delete(`task/${id}`)
+    return Axios.delete(`task/${id}`, {
+      headers: {
+        Authorization: localStorage.getItem('token'),
+      },
+    })
   },
   deleteCompleted: (ids: string) => {
-    return instance.delete(`tasks/${ids}`)
+    return Axios.delete(`tasks/${ids}`, {
+      headers: {
+        Authorization: localStorage.getItem('token'),
+      },
+    })
   },
   changeAllStatus: (ids: string[], status: string) => {
-    return instance.put(`task/change-status`, { ids, status })
+    return Axios.put(
+      `task/change-status`,
+      { ids, status },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      }
+    )
   },
 }
 
