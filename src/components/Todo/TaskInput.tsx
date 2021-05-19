@@ -7,31 +7,36 @@ import {
   useEffect,
 } from 'react'
 import styled from 'styled-components'
-import useActions from '../../hooks/useActions'
 
-import { TaskStatus, Task } from '../../types'
+import useActions from '@hooks//useActions'
+
+import { TaskStatus, Task } from '@type//'
 
 type Props = {
   task: Task
+  handleSetEditTask: (value: boolean) => void
   isEdit: boolean
   status: TaskStatus
 }
 
-const TaskInput: FC<Props> = ({ task, isEdit, status }) => {
+const TaskInput: FC<Props> = ({ task, isEdit, status, handleSetEditTask }) => {
   const [value, setValue] = useState<string>(task.text)
   const inputEl = useRef<HTMLInputElement | null>(null)
 
-  const { setEdit, removeTaskRequest, updateTaskRequest } = useActions()
+  const { removeTaskRequest, updateTaskRequest } = useActions()
 
   const handleDblClick = () => {
-    setEdit(task.id)
+    handleSetEditTask(true)
   }
 
   const handleEditTask = () => {
     const text = value.trim()
+
     if (text.length) {
       updateTaskRequest(task.id, text, task.status)
+      handleSetEditTask(false)
     } else {
+      handleSetEditTask(false)
       removeTaskRequest(task.id)
     }
   }
@@ -44,8 +49,6 @@ const TaskInput: FC<Props> = ({ task, isEdit, status }) => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value)
-
-  const handleBlur = () => handleEditTask()
 
   const handleKeyPress = (event: KeyboardEvent): void => {
     if (event.key === 'Enter') {
@@ -61,7 +64,7 @@ const TaskInput: FC<Props> = ({ task, isEdit, status }) => {
         disabled={!isEdit}
         status={status}
         onKeyPress={handleKeyPress}
-        onBlur={handleBlur}
+        onBlur={handleEditTask}
         onChange={handleChange}
         value={value}
       />

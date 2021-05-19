@@ -1,10 +1,10 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import styled from 'styled-components'
 
+import { TaskStatus, Task } from '@type//'
+import useActions from '@hooks//useActions'
 import { Checkbox, checkBoxVariant, DeleteButton } from '../common'
-import { TaskStatus, Task } from '../../types'
 import TaskInput from './TaskInput'
-import useActions from '../../hooks/useActions'
 
 type Props = {
   task: Task
@@ -12,6 +12,12 @@ type Props = {
 
 const TaskItem: FC<Props> = ({ task }) => {
   const { updateTaskRequest, removeTaskRequest } = useActions()
+
+  const [isEdit, setIsEdit] = useState<boolean>(false)
+
+  const handleSetEditTask = (value: boolean) => {
+    setIsEdit(value)
+  }
 
   const handleChangeStatus = () => {
     const status =
@@ -21,22 +27,25 @@ const TaskItem: FC<Props> = ({ task }) => {
     updateTaskRequest(task.id, task.text, status)
   }
 
-  const handleDeleteTask = async () => {
-    await removeTaskRequest(task.id)
-  }
+  const handleDeleteTask = () => removeTaskRequest(task.id)
 
   return (
     <Wrapper>
       <StyledCheckBox
         variant={checkBoxVariant.primary}
         isChecked={task.status === TaskStatus.COMPLETED}
-        isHidden={task.isEdit}
+        isHidden={isEdit}
         onChange={handleChangeStatus}
       />
       <TaskWrapper>
-        <TaskInput status={task.status} isEdit={task.isEdit} task={task} />
+        <TaskInput
+          status={task.status}
+          handleSetEditTask={handleSetEditTask}
+          isEdit={isEdit}
+          task={task}
+        />
       </TaskWrapper>
-      <DeleteButton onClick={handleDeleteTask} isHidden={task.isEdit} />
+      <DeleteButton onClick={handleDeleteTask} isHidden={isEdit} />
     </Wrapper>
   )
 }

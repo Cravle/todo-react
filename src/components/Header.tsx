@@ -2,23 +2,25 @@ import { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import styled from 'styled-components'
-import { getUser } from '../redux/selectors/user'
 
-import { clearLS } from '../utils'
+import useActions from '@hooks//useActions'
+import { getIsAuth } from '@selectors//user'
+import { clearLS } from '@utils/'
 
 const Header: FC = () => {
   const history = useHistory()
 
-  const user = useSelector(getUser)
-
+  const isAuth = useSelector(getIsAuth)
+  const { setIsAuth } = useActions()
   const handleClick = () => {
     clearLS()
-    history.push('/')
+    setIsAuth(false)
+    history.push('/login')
   }
 
   return (
     <Container>
-      {!!user && <Button onClick={handleClick}>Log out</Button>}
+      {isAuth && <Button onClick={handleClick}>Log out</Button>}
     </Container>
   )
 }

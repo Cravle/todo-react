@@ -1,5 +1,5 @@
 import { CountTasks, Task } from '../../types'
-import { RootState } from '../reducers'
+import { RootState } from '..'
 
 export const getTaskList = (state: RootState): Task[] => state.tasks.taskList
 

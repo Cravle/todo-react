@@ -1,4 +1,4 @@
-import { TasksAction, TasksActionTypes, TasksState } from '../../types/tasks'
+import { TasksAction, TasksActionTypes, TasksState } from '@type//tasks'
 
 const initialState: TasksState = {
   taskList: [],
@@ -16,14 +16,9 @@ const tasksReducer = (
   switch (action.type) {
     case TasksActionTypes.SET_FILTER:
       return { ...state, filterType: action.filter }
-    case TasksActionTypes.SET_EDIT: {
-      const newTaskList = state.taskList.map((task) =>
-        task.id === action.id ? { ...task, isEdit: true } : task
-      )
-      return { ...state, taskList: newTaskList }
-    }
+
     case TasksActionTypes.GET_TASK_SUCCESS: {
-      return { ...state, taskList: action.newTaskList, count: action.count }
+      return { ...state, ...action.payload }
     }
     default:
       return state

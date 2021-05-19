@@ -8,7 +8,6 @@ export type TasksState = {
 
 export enum TasksActionTypes {
   SET_FILTER = 'TODO/TASKS/SET_FILTER',
-  SET_EDIT = 'TODO/TASKS/SET_EDIT',
 
   GET_TASK_REQUEST = 'TODO/TASKS/GET_TASK_REQUEST',
   GET_TASK_SUCCESS = 'TODO/TASKS/GET_TASK_SUCCESS',
@@ -40,11 +39,6 @@ export type SelectFilterAction = {
   filter: string
 }
 
-export type SetEditAction = {
-  type: TasksActionTypes.SET_EDIT
-  id: string
-}
-
 export type GetTaskRequest = {
   type: TasksActionTypes.GET_TASK_REQUEST
   payload: {
@@ -54,8 +48,10 @@ export type GetTaskRequest = {
 
 export type GetTaskSuccess = {
   type: TasksActionTypes.GET_TASK_SUCCESS
-  newTaskList: Task[]
-  count: CountTasks
+  payload: {
+    taskList: Task[]
+    count: CountTasks
+  }
 }
 
 export type GetTaskFailed = {
@@ -140,9 +136,9 @@ export type ChangeStatusTaskFailed = {
   type: TasksActionTypes.CHANGE_STATUS_TASK_FAILED
 }
 
+//refactr: redux action type
 export type TasksAction =
   | SelectFilterAction
-  | SetEditAction
   | GetTaskRequest
   | GetTaskSuccess
   | GetTaskFailed

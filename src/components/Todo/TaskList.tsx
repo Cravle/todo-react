@@ -1,15 +1,16 @@
 import { FC } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { getTaskList } from '../../redux/selectors/tasks'
 
+import { getTaskList } from '../../store/selectors/tasks'
+import { Task } from '../../types'
 import TaskItem from './TaskItem'
 
 const TaskList: FC = () => {
   const taskList = useSelector(getTaskList)
   return (
     <List>
-      {taskList.map((task: any) => (
+      {taskList.map((task: Task) => (
         <TaskItem task={task} key={task.id} />
       ))}
     </List>

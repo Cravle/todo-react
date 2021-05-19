@@ -1,13 +1,18 @@
-import React, { FC, KeyboardEvent, useState } from 'react'
+import React, { FC, KeyboardEvent, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import useActions from '../../hooks/useActions'
-import { getFilterType } from '../../redux/selectors/tasks'
+
+import useActions from '@hooks//useActions'
+import { getCountTasks, getTaskList } from '@selectors//tasks'
+import { TaskStatus } from '@type//'
+import { Checkbox, checkBoxVariant } from '../common'
 
 const MainInput: FC = () => {
   const [value, setValue] = useState<string>('')
-  const { createTaskRequest, getTaskRequest } = useActions()
-  const filterType = useSelector(getFilterType)
+  const { createTaskRequest, changeAllStatusRequest } = useActions()
+
+  const taskList = useSelector(getTaskList)
+  const countTasks = useSelector(getCountTasks)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setValue(e.target.value)
@@ -17,21 +22,44 @@ const MainInput: FC = () => {
 
     if (e.key === 'Enter' && taskText) {
       e.preventDefault()
-
-      await createTaskRequest(value)
-      getTaskRequest(filterType)
+      createTaskRequest(value)
       setValue('')
     }
   }
 
+  const isAllTasksCompleted = useMemo(
+    () => !!taskList.length && taskList.length === countTasks.completed,
+    [countTasks, taskList.length]
+  )
+
+  const handleChangeStatusTasks = () => {
+    const taskStatus: TaskStatus = isAllTasksCompleted
+      ? TaskStatus.ACTIVE
+      : TaskStatus.COMPLETED
+
+    const ids = taskList.map((task) => task.id)
+    changeAllStatusRequest(ids, taskStatus)
+  }
+
   return (
-    <Input
-      type="text"
-      value={value}
-      onChange={handleChange}
-      onKeyPress={handleKeyPress}
-      placeholder="Whats need to be done?"
-    />
+    <>
+      <MainHeader />
+      <MainContainer>
+        <StyledCheckBox
+          isHidden={!taskList.length}
+          isChecked={isAllTasksCompleted}
+          variant={checkBoxVariant.secondary}
+          onChange={handleChangeStatusTasks}
+        />
+        <Input
+          type="text"
+          value={value}
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
+          placeholder="Whats need to be done?"
+        />
+      </MainContainer>
+    </>
   )
 }
 
@@ -43,6 +71,28 @@ const Input = styled.input`
   padding-left: 10px;
   outline: none;
   z-index: 2;
+`
+
+const StyledCheckBox = styled(Checkbox)<{ isHidden: boolean }>`
+  ${({ isHidden }) => isHidden && 'visibility: hidden'}
+`
+
+const MainContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 9fr;
+  height: 60px;
+  background-color: #fff;
+  border-bottom: 1px dotted #ccc;
+  position: relative;
+`
+
+const MainHeader = styled.div`
+  width: 100%;
+  height: 16px;
+  border-bottom: 1px solid #1564b3;
+  background-color: #1976d2;
+  margin-top: 20px;
+  position: relative;
 `
 
 export default MainInput

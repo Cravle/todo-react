@@ -1,80 +1,64 @@
 import { FC } from 'react'
 import { useHistory } from 'react-router'
-import { FormikErrors, useFormik, FormikValues } from 'formik'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
+import { Button } from '@material-ui/core'
+
+import useActions from '@hooks//useActions'
+import { getError } from '@selectors//user'
+import { loginValidation } from '@utils//'
 
 import arrow from '../images/right.svg'
-import { setItem } from '../utils'
-import useActions from '../hooks/useActions'
-
-type User = {
-  email: string
-  password: string
-}
 
 const AuthPage: FC = () => {
   const history = useHistory()
 
-  const { setUser } = useActions()
+  const error: string = useSelector(getError)
 
-  const validate = (values: User) => {
-    const errors: FormikErrors<FormikValues> = {}
-    if (!values.email) {
-      errors.email = 'Required'
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    ) {
-      errors.email = 'Invalid email address'
-    }
-    if (!values.password) {
-      errors.password = 'Required'
-    } else if (values.password.length < 6) {
-      errors.password = 'Must be 6 characters or more'
-    }
-    return errors
-  }
-
-  const { errors, handleSubmit, handleChange, values } = useFormik({
-    initialValues: { email: '', password: '' },
-    validate,
-    onSubmit: (values) => {
-      setItem('user', JSON.stringify(values))
-      setUser(values)
-      history.push('/')
-    },
-  })
+  const { loginRequest, setError } = useActions()
 
   return (
     <Container>
       <Title>Log in</Title>
-      <Form onSubmit={handleSubmit}>
-        <FieldWrapper>
-          {errors.email ? <Error>{errors.email}</Error> : null}
-          <Input
-            placeholder="Type your email"
-            onChange={handleChange}
-            value={values.email}
-            id="email"
-            type="email"
-            name="email"
-          />
-        </FieldWrapper>
-        <FieldWrapper>
-          {errors.password ? <Error>{errors.password}</Error> : null}
-          <Input
-            placeholder="Type your password"
-            onChange={handleChange}
-            value={values.password}
-            id="password"
-            type="password"
-            name="password"
-          />
-        </FieldWrapper>
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validate={loginValidation}
+        onSubmit={(values) => {
+          setError('')
+          loginRequest(values, history)
+        }}
+      >
+        {(formik) => (
+          <StyledForm onSubmit={formik.handleSubmit}>
+            <FormError>{error}</FormError>
+            <FieldWrapper>
+              <ErrorMessage component={StyledError} name="email" />
+              <Input placeholder="Type your email" type="email" name="email" />
+            </FieldWrapper>
 
-        <WrapperButton>
-          <StyledButton id="submit" bg={arrow} type="submit" color="primary" />
-        </WrapperButton>
-      </Form>
+            <FieldWrapper>
+              <Input
+                placeholder="Type your password"
+                type="password"
+                name="password"
+              />
+            </FieldWrapper>
+
+            <WrapperButton>
+              <StyledButton
+                variant="contained"
+                bg={arrow}
+                type="submit"
+                color="primary"
+              />
+            </WrapperButton>
+          </StyledForm>
+        )}
+      </Formik>
+
+      <LabelLink to="/register">Not registered? Create account.</LabelLink>
     </Container>
   )
 }
@@ -109,46 +93,58 @@ const Title = styled.h1`
   text-shadow: -1px -1px rgb(0 0 0 / 20%);
 `
 
-const Form = styled.form`
-  padding: 20px 10px;
+const StyledForm = styled(Form)`
+  position: relative; ;
 `
 
-const Input = styled.input`
+const Input = styled(Field)`
   height: 30px;
   width: 300px;
   padding: 5px;
+  margin-top: 10px;
   font-size: 16px;
   outline: none;
   border: none;
   border-radius: 10px;
 `
 
-const StyledButton = styled.button<{ color: string; bg: string }>`
+const StyledButton = styled(Button)<{ bg: string }>`
+  margin: 25px 0 !important;
   position: relative;
-  padding: 10px 80px;
+  padding: 10px 80px !important;
   color: #fff;
   outline: none;
   border: none;
   font-size: 18px;
   height: 40px;
+  width: 60px;
   cursor: pointer;
-  border-radius: 20px;
-  background-color: ${({ color }) =>
-    color === 'primary' ? '#1976d2' : '#1fd123'};
+  border-radius: 20px !important;
   background-image: ${({ bg }) => `url(${bg})`};
   background-repeat: no-repeat;
   background-position: center;
-  transition: background 0.1s linear;
-  &:hover {
-    background-color: #1560ac;
-  }
 `
 
-const Error = styled.div`
+const StyledError = styled.div`
   position: absolute;
-  top: -20px;
+  top: -15px;
   color: red;
   padding-left: 10px;
+`
+
+const FormError = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: red;
+  font-weight: 600;
+  text-align: center;
+`
+
+const LabelLink = styled(Link)`
+  justify-self: center;
+  text-decoration: none;
 `
 
 export default AuthPage

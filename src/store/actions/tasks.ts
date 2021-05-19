@@ -1,12 +1,8 @@
-import { CountTasks, Task } from '../../types'
-import { TasksAction, TasksActionTypes } from '../../types/tasks'
+import { CountTasks, Task } from '@type//'
+import { TasksAction, TasksActionTypes } from '@type//tasks'
 
 export const selectFilter = (filter: string): TasksAction => {
   return { type: TasksActionTypes.SET_FILTER, filter }
-}
-
-export const setEdit = (id: string): TasksAction => {
-  return { type: TasksActionTypes.SET_EDIT, id }
 }
 
 export const getTaskRequest = (status: string): TasksAction => {
@@ -18,11 +14,11 @@ export const getTaskRequest = (status: string): TasksAction => {
   }
 }
 
-export const getTaskSuccess = (
-  newTaskList: Task[],
+export const getTaskSuccess = (payload: {
+  taskList: Task[]
   count: CountTasks
-): TasksAction => {
-  return { type: TasksActionTypes.GET_TASK_SUCCESS, newTaskList, count }
+}): TasksAction => {
+  return { type: TasksActionTypes.GET_TASK_SUCCESS, payload }
 }
 
 export const getTaskFailed = (): TasksAction => {
@@ -89,7 +85,7 @@ export const createTaskRequest = (text: string): TasksAction => {
 }
 
 export const createTaskSuccess = (): TasksAction => {
-  return { type: TasksActionTypes.REMOVE_TASK_SUCCESS }
+  return { type: TasksActionTypes.CREATE_TASK_SUCCESS }
 }
 
 export const createTaskFailed = (): TasksAction => {

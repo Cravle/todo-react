@@ -3,12 +3,6 @@ export enum TaskStatus {
   COMPLETED = 'completed',
 }
 
-export type TaskDb = {
-  status: TaskStatus
-  text: string
-  id: string
-}
-
 export type CountTasks = {
   active: number
   completed: number
@@ -18,7 +12,6 @@ export type Task = {
   text: string
   status: TaskStatus
   id: string
-  isEdit: boolean
 }
 
 export type CountTaskByStatus = {
@@ -32,6 +25,6 @@ export type User = {
 }
 
 export type TaskResponse = {
-  tasks: TaskDb[]
+  tasks: Task[]
   count: CountTasks
 }
