@@ -3,12 +3,7 @@ import { put, takeEvery, call, all } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 
 import { userAPI } from '@api//'
-import {
-  UserActionTypes,
-  LoginRequest,
-  RegisterRequest,
-  RefreshRequest,
-} from '@type//user'
+import { UserActionTypes, LoginRequest, RegisterRequest } from '@type//user'
 
 import {
   loginFailed,
@@ -49,7 +44,8 @@ function* registerWorker(action: RegisterRequest) {
       action.payload.user.password
     )
 
-    if (res.status === 200) {
+    if (res.status === 201) {
+      console.log('success')
       yield put(registerSuccess())
       yield put(push('/login'))
     }

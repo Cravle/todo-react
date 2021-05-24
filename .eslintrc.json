@@ -17,6 +17,11 @@
   ],
   "plugins": ["react", "prettier", "@typescript-eslint"],
   "rules": {
+    "react/jsx-props-no-spreading": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "dot-notation": "off",
+    "prefer-arrow-callback": "warn",
+    "no-param-reassign": "warn",
     "@typescript-eslint/ban-ts-comment": "off",
     "import/no-unresolved": 0,
     "spaced-comment": ["warn", "always"],

@@ -1,14 +1,6 @@
 import { FC } from 'react'
 import { useHistory } from 'react-router'
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FormikErrors,
-  useFormik,
-  FormikValues,
-} from 'formik'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -28,6 +20,7 @@ export type SignUpForm = {
 const SignUp: FC = () => {
   const { setError, registerRequest } = useActions()
   const error: string = useSelector(getError)
+  const history = useHistory()
 
   return (
     <Container>

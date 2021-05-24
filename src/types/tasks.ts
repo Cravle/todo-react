@@ -41,9 +41,6 @@ export type SelectFilterAction = {
 
 export type GetTaskRequest = {
   type: TasksActionTypes.GET_TASK_REQUEST
-  payload: {
-    status: string
-  }
 }
 
 export type GetTaskSuccess = {

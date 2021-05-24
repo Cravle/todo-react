@@ -1,32 +1,99 @@
-import { FC, useEffect } from 'react'
+import { FC, SyntheticEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useLocation } from 'react-router'
+import { Snackbar } from '@material-ui/core'
+import MuiAlert from '@material-ui/lab/Alert'
 
 import { MainInput, Logo, NavMenu, TaskList } from '@components//Todo'
 // @ts-ignore
 import useActions from '@hooks/useActions'
+import { socket } from '@api//socket'
+
+function Alert(props: any) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
+}
 
 const Todo: FC = () => {
   const query = new URLSearchParams(useLocation().search)
   const status = query.get('status') || 'all'
   const { getTaskRequest, selectFilter } = useActions()
+  const [success, setSuccess] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
 
   useEffect(() => {
     selectFilter(status)
-    getTaskRequest(status)
+    getTaskRequest()
   }, [status])
 
+  const handleOpenSuccess = () => setSuccess(true)
+  const handleOpenError = () => setError(true)
+
+  useEffect(() => {
+    socket.emit('JOIN_ROOM', localStorage.getItem('token'))
+
+    socket.on('TASKS_UPDATED', () => {
+      handleOpenSuccess()
+      getTaskRequest()
+    })
+
+    socket.on('disconnect', () => handleOpenError())
+  }, [])
+
+  const handleCloseSuccess = (
+    event: SyntheticEvent<HTMLLinkElement>,
+    reason: string
+  ) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setSuccess(false)
+  }
+
+  const handleCloseError = (
+    event: SyntheticEvent<HTMLLinkElement>,
+    reason: string
+  ) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setError(false)
+  }
+
   return (
-    <Container>
-      <Logo />
-      <Wrapper>
-        <Inner>
-          <MainInput />
-          <TaskList />
-        </Inner>
-      </Wrapper>
-      <NavMenu />
-    </Container>
+    <>
+      <Snackbar
+        open={success}
+        autoHideDuration={3000}
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <Alert onClose={handleCloseSuccess} severity="success">
+          Tasks were updated.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={error}
+        autoHideDuration={3000}
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <Alert onClose={handleCloseError} severity="error">
+          Connection closed
+        </Alert>
+      </Snackbar>
+      <Container>
+        <Logo />
+        <Wrapper>
+          <Inner>
+            <MainInput />
+            <TaskList />
+          </Inner>
+        </Wrapper>
+        <NavMenu />
+      </Container>
+    </>
   )
 }
 

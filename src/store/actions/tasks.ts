@@ -5,12 +5,9 @@ export const selectFilter = (filter: string): TasksAction => {
   return { type: TasksActionTypes.SET_FILTER, filter }
 }
 
-export const getTaskRequest = (status: string): TasksAction => {
+export const getTaskRequest = (): TasksAction => {
   return {
     type: TasksActionTypes.GET_TASK_REQUEST,
-    payload: {
-      status,
-    },
   }
 }
 

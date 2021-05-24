@@ -6,14 +6,20 @@ import * as taskTypes from '@type//tasks'
 import { tasksAPI } from '@api//'
 import * as actions from '@actions//tasks'
 import { refreshTokenRequest } from '@actions//user'
+import { socket } from '@api//socket'
 
-function* getTasksWorker(action: taskTypes.GetTaskRequest) {
+export const ADD_TASK = 'ADD_TASK'
+export const START_CHANNEL = 'START_CHANNEL'
+export const STOP_CHANNEL = 'STOP_CHANNEL'
+export const CHANNEL_ON = 'CHANNEL_ON'
+export const CHANNEL_OFF = 'CHANNEL_OFF'
+export const SERVER_ON = 'SERVER_ON'
+export const SERVER_OFF = 'SERVER_OFF'
+
+function* getTasksWorker() {
   try {
-    console.log(action.payload.status, 'action.payload.status')
-    const res: TaskResponse = yield call(
-      tasksAPI.getTasks,
-      action.payload.status
-    )
+    const filterType: string = yield select(getFilterType)
+    const res: TaskResponse = yield call(tasksAPI.getTasks, filterType)
 
     const taskList: Task[] = res.tasks.map((task: Task) => ({
       text: task.text,
@@ -31,6 +37,7 @@ function* getTasksWorker(action: taskTypes.GetTaskRequest) {
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
+      yield put(actions.getTaskRequest())
     }
     yield put(actions.getTaskFailed())
   }
@@ -46,12 +53,19 @@ function* updateTasksWorker(action: taskTypes.UpdateTaskRequest) {
     )
 
     yield put(actions.updateTaskSuccess())
-    const filterType: string = yield select(getFilterType)
 
-    yield put(actions.getTaskRequest(filterType))
+    yield put(actions.getTaskRequest())
+    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
+      yield put(
+        actions.updateTaskRequest(
+          action.payload.id,
+          action.payload.text,
+          action.payload.status
+        )
+      )
     }
     yield put(actions.updateTaskFailed())
   }
@@ -63,10 +77,13 @@ function* createTasksWorker(action: taskTypes.CreateTaskRequest) {
 
     yield put(actions.createTaskSuccess())
 
-    const filterType: string = yield select(getFilterType)
-
-    yield put(actions.getTaskRequest(filterType))
+    yield put(actions.getTaskRequest())
+    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
   } catch (e) {
+    if (e?.response?.status === 401) {
+      yield put(refreshTokenRequest())
+      yield put(actions.createTaskRequest(action.payload.text))
+    }
     yield put(actions.createTaskFailed())
   }
 }
@@ -76,10 +93,14 @@ function* removeTasksWorker(action: taskTypes.RemoveTaskRequest) {
     yield call(tasksAPI.deleteTask, action.payload.id)
 
     yield put(actions.createTaskSuccess())
-    const filterType: string = yield select(getFilterType)
 
-    yield put(actions.getTaskRequest(filterType))
+    yield put(actions.getTaskRequest())
+    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
   } catch (e) {
+    if (e?.response?.status === 401) {
+      yield put(refreshTokenRequest())
+      yield put(actions.removeTaskRequest(action.payload.id))
+    }
     yield put(actions.createTaskFailed())
   }
 }
@@ -91,10 +112,14 @@ function* removeCompletedTasksWorker(
     yield call(tasksAPI.deleteCompleted, action.payload.ids)
 
     yield put(actions.removeCompletedTaskSuccess())
-    const filterType: string = yield select(getFilterType)
 
-    yield put(actions.getTaskRequest(filterType))
+    yield put(actions.getTaskRequest())
+    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
   } catch (e) {
+    if (e?.response?.status === 401) {
+      yield put(refreshTokenRequest())
+      yield put(actions.removeCompletedTaskRequest(action.payload.ids))
+    }
     yield put(actions.removeCompletedTaskFailed())
   }
 }
@@ -108,10 +133,19 @@ function* changeStatusTaskWorker(action: taskTypes.ChangeStatusTaskRequest) {
     )
 
     yield put(actions.changeAllStatusSuccess())
-    const filterType: string = yield select(getFilterType)
 
-    yield put(actions.getTaskRequest(filterType))
+    yield put(actions.getTaskRequest())
+    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
   } catch (e) {
+    if (e?.response?.status === 401) {
+      yield put(refreshTokenRequest())
+      yield put(
+        actions.changeAllStatusRequest(
+          action.payload.ids,
+          action.payload.status
+        )
+      )
+    }
     yield put(actions.changeAllStatusFailed())
   }
 }
@@ -138,4 +172,21 @@ export function* tasksWatcher() {
     taskTypes.TasksActionTypes.CHANGE_STATUS_TASK_REQUEST,
     changeStatusTaskWorker
   )
+}
+
+const createSocketChannel = () => {
+  // const subscribe = (emitter: any) => {
+  //   socket.on(SERVER_ON, emitter)
+  //   return () => socket.removeListener(SERVER_ON, emitter)
+  // }
+  // return eventChannel(subscribe)
+}
+
+export function* connectServerSaga() {
+  // const channel: EventChannel<any> = yield call(createSocketChannel)
+  // while (true) {
+  //   const connect: Generator = yield take(channel)
+  //   const action = JobsActions.fresh(jobs)
+  //   yield put(action)
+  // }
 }

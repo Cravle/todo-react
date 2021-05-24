@@ -94,7 +94,7 @@ const Title = styled.h1`
 `
 
 const StyledForm = styled(Form)`
-  position: relative; ;
+  position: relative;
 `
 
 const Input = styled(Field)`
