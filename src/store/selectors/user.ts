@@ -1,4 +1,3 @@
-import { UserState } from '@type//user'
 import { RootState } from '..'
 
 export const getError = (state: RootState): string => state.user.error

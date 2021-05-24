@@ -45,7 +45,6 @@ function* registerWorker(action: RegisterRequest) {
     )
 
     if (res.status === 201) {
-      console.log('success')
       yield put(registerSuccess())
       yield put(push('/login'))
     }
@@ -62,7 +61,6 @@ function* refreshWorker() {
     if (res.status === 201) {
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('refreshToken', res.data.refreshToken)
-      console.log('token updated')
     }
   } catch (e) {
     yield put(setIsAuth(false))

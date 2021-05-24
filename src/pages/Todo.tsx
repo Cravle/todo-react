@@ -5,9 +5,9 @@ import { Snackbar } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
 
 import { MainInput, Logo, NavMenu, TaskList } from '@components//Todo'
-// @ts-ignore
-import useActions from '@hooks/useActions'
+import useActions from '@hooks//useActions'
 import { socket } from '@api//socket'
+import { JOIN_ROOM, TASKS_UPDATED, REFRESH } from '@constants//'
 
 function Alert(props: any) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -16,7 +16,7 @@ function Alert(props: any) {
 const Todo: FC = () => {
   const query = new URLSearchParams(useLocation().search)
   const status = query.get('status') || 'all'
-  const { getTaskRequest, selectFilter } = useActions()
+  const { getTaskRequest, selectFilter, refreshTokenRequest } = useActions()
   const [success, setSuccess] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
 
@@ -29,9 +29,12 @@ const Todo: FC = () => {
   const handleOpenError = () => setError(true)
 
   useEffect(() => {
-    socket.emit('JOIN_ROOM', localStorage.getItem('token'))
+    socket.emit(JOIN_ROOM, localStorage.getItem('token'))
+    socket.on(REFRESH, () => {
+      refreshTokenRequest()
+    })
 
-    socket.on('TASKS_UPDATED', () => {
+    socket.on(TASKS_UPDATED, () => {
       handleOpenSuccess()
       getTaskRequest()
     })

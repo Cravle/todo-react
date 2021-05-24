@@ -7,14 +7,7 @@ import { tasksAPI } from '@api//'
 import * as actions from '@actions//tasks'
 import { refreshTokenRequest } from '@actions//user'
 import { socket } from '@api//socket'
-
-export const ADD_TASK = 'ADD_TASK'
-export const START_CHANNEL = 'START_CHANNEL'
-export const STOP_CHANNEL = 'STOP_CHANNEL'
-export const CHANNEL_ON = 'CHANNEL_ON'
-export const CHANNEL_OFF = 'CHANNEL_OFF'
-export const SERVER_ON = 'SERVER_ON'
-export const SERVER_OFF = 'SERVER_OFF'
+import { TASKS_UPDATED } from '@constants//'
 
 function* getTasksWorker() {
   try {
@@ -55,7 +48,7 @@ function* updateTasksWorker(action: taskTypes.UpdateTaskRequest) {
     yield put(actions.updateTaskSuccess())
 
     yield put(actions.getTaskRequest())
-    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
+    socket.emit(TASKS_UPDATED, localStorage.getItem('token'))
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
@@ -78,7 +71,7 @@ function* createTasksWorker(action: taskTypes.CreateTaskRequest) {
     yield put(actions.createTaskSuccess())
 
     yield put(actions.getTaskRequest())
-    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
+    socket.emit(TASKS_UPDATED, localStorage.getItem('token'))
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
@@ -95,7 +88,7 @@ function* removeTasksWorker(action: taskTypes.RemoveTaskRequest) {
     yield put(actions.createTaskSuccess())
 
     yield put(actions.getTaskRequest())
-    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
+    socket.emit(TASKS_UPDATED, localStorage.getItem('token'))
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
@@ -114,7 +107,7 @@ function* removeCompletedTasksWorker(
     yield put(actions.removeCompletedTaskSuccess())
 
     yield put(actions.getTaskRequest())
-    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
+    socket.emit(TASKS_UPDATED, localStorage.getItem('token'))
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
@@ -135,7 +128,7 @@ function* changeStatusTaskWorker(action: taskTypes.ChangeStatusTaskRequest) {
     yield put(actions.changeAllStatusSuccess())
 
     yield put(actions.getTaskRequest())
-    socket.emit('TASKS_UPDATED', localStorage.getItem('token'))
+    socket.emit(TASKS_UPDATED, localStorage.getItem('token'))
   } catch (e) {
     if (e?.response?.status === 401) {
       yield put(refreshTokenRequest())
@@ -172,21 +165,4 @@ export function* tasksWatcher() {
     taskTypes.TasksActionTypes.CHANGE_STATUS_TASK_REQUEST,
     changeStatusTaskWorker
   )
-}
-
-const createSocketChannel = () => {
-  // const subscribe = (emitter: any) => {
-  //   socket.on(SERVER_ON, emitter)
-  //   return () => socket.removeListener(SERVER_ON, emitter)
-  // }
-  // return eventChannel(subscribe)
-}
-
-export function* connectServerSaga() {
-  // const channel: EventChannel<any> = yield call(createSocketChannel)
-  // while (true) {
-  //   const connect: Generator = yield take(channel)
-  //   const action = JobsActions.fresh(jobs)
-  //   yield put(action)
-  // }
 }

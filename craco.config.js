@@ -12,15 +12,7 @@ module.exports = {
       '@selectors': path.resolve(__dirname, 'src/store/selectors/'),
       '@actions': path.resolve(__dirname, 'src/store/actions/'),
       '@api': path.resolve(__dirname, 'src/api/'),
+      '@constants': path.resolve(__dirname, 'src/constants/'),
     },
   },
 }
-// "@Todo/*": ["src/components/Todo*"],
-// "@hooks/*": ["src/hooks*"],
-// "@pages/*": ["src/pages*"],
-// "@redux/*": ["src/redux*"],
-// "@types/*": ["src/types*"],
-// "@utils/*": ["src/utils"],
-// "@selectors/*": ["src/redux/selectors*"],
-// "@actions/*": ["src/redux/actions*"],
-// "@api/*": ["src/api*"]

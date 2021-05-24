@@ -6,12 +6,13 @@
       "@Todo/*": ["components/Todo*"],
       "@hooks/*": ["hooks*"],
       "@pages/*": ["pages*"],
-      "@store/*": ["redux*"],
+      "@store/*": ["store*"],
       "@type/*": ["types*"],
       "@utils/*": ["utils"],
       "@selectors/*": ["store/selectors*"],
       "@actions/*": ["store/actions*"],
-      "@api/*": ["api*"]
+      "@api/*": ["api*"],
+      "@constants/*": ["constants*"]
     }
   }
 }

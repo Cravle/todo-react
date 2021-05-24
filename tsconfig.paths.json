@@ -11,7 +11,8 @@
       "@utils/*": ["src/utils"],
       "@selectors/*": ["src/store/selectors*"],
       "@actions/*": ["src/store/actions*"],
-      "@api/*": ["src/api*"]
+      "@api/*": ["src/api*"],
+      "@constants/*": ["src/constants*"]
     }
   }
 }

@@ -8,6 +8,7 @@ import TaskItem from './TaskItem'
 
 const TaskList: FC = () => {
   const taskList = useSelector(getTaskList)
+
   return (
     <List>
       {taskList.map((task: Task) => (

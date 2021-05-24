@@ -42,6 +42,10 @@ const TaskInput: FC<Props> = ({ task, isEdit, status, handleSetEditTask }) => {
   }
 
   useEffect(() => {
+    setValue(task.text)
+  }, [task.text])
+
+  useEffect(() => {
     if (isEdit) {
       inputEl.current?.focus()
     }
