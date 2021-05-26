@@ -17,6 +17,7 @@
   ],
   "plugins": ["react", "prettier", "@typescript-eslint"],
   "rules": {
+    "react/jsx-boolean-value": "off",
     "react/jsx-props-no-spreading": "off",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
     "dot-notation": "off",
