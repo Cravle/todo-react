@@ -26,6 +26,7 @@ const Button = styled.button<{ disabled?: boolean; hidden?: boolean }>`
   font-weight: 700;
   cursor: pointer;
   transition: font-size 0.2s linear;
+  background-color: transparent;
   z-index: 1;
 
   &:hover {
