@@ -3,11 +3,13 @@ import { CountTasks, Task } from '.'
 export type TasksState = {
   taskList: Task[]
   filterType: string
-  count: { active: number; completed: number }
+  count: number
+  page: number
 }
 
 export enum TasksActionTypes {
   SET_FILTER = 'TODO/TASKS/SET_FILTER',
+  SET_PAGE = 'TODO/TASKS/SET_PAGE',
 
   GET_TASK_REQUEST = 'TODO/TASKS/GET_TASK_REQUEST',
   GET_TASK_SUCCESS = 'TODO/TASKS/GET_TASK_SUCCESS',
@@ -39,6 +41,11 @@ export type SelectFilterAction = {
   filter: string
 }
 
+export type SetPage = {
+  type: TasksActionTypes.SET_PAGE
+  payload: number
+}
+
 export type GetTaskRequest = {
   type: TasksActionTypes.GET_TASK_REQUEST
 }
@@ -47,7 +54,7 @@ export type GetTaskSuccess = {
   type: TasksActionTypes.GET_TASK_SUCCESS
   payload: {
     taskList: Task[]
-    count: CountTasks
+    count: number
   }
 }
 
@@ -136,6 +143,7 @@ export type ChangeStatusTaskFailed = {
 //refactr: redux action type
 export type TasksAction =
   | SelectFilterAction
+  | SetPage
   | GetTaskRequest
   | GetTaskSuccess
   | GetTaskFailed

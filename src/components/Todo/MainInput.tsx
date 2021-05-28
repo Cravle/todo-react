@@ -28,8 +28,8 @@ const MainInput: FC = () => {
   }
 
   const isAllTasksCompleted = useMemo(
-    () => !!taskList.length && taskList.length === countTasks.completed,
-    [countTasks, taskList.length]
+    () => taskList.every((task) => task.status === 'completed'),
+    [taskList]
   )
 
   const handleChangeStatusTasks = () => {
