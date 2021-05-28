@@ -13,9 +13,13 @@ export const getTaskRequest = (): TasksAction => {
 
 export const getTaskSuccess = (payload: {
   taskList: Task[]
-  count: CountTasks
+  count: number
 }): TasksAction => {
   return { type: TasksActionTypes.GET_TASK_SUCCESS, payload }
+}
+
+export const setPage = (payload: number): TasksAction => {
+  return { type: TasksActionTypes.SET_PAGE, payload }
 }
 
 export const getTaskFailed = (): TasksAction => {

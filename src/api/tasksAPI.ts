@@ -1,18 +1,24 @@
+import queryString from 'query-string'
+
 import Axios from '.'
 
 const tasksAPI = {
-  getTasks: (status: string) => {
-    return status !== 'all'
-      ? Axios.get(`tasks?status=${status}`, {
-          headers: {
-            Authorization: localStorage.getItem('token'),
-          },
-        }).then((res) => res.data)
-      : Axios.get(`tasks`, {
-          headers: {
-            Authorization: localStorage.getItem('token'),
-          },
-        }).then((res) => res.data)
+  getTasks: (status: string, page = 1, pageSize = 5) => {
+    const query = queryString.stringifyUrl(
+      {
+        url: 'tasks',
+        query: { status: status === 'all' ? null : status, page, pageSize },
+      },
+      {
+        skipNull: true,
+      }
+    )
+
+    return Axios.get(query, {
+      headers: {
+        Authorization: localStorage.getItem('token'),
+      },
+    }).then((res) => res.data)
   },
   updateTask: (id: string, text: string, status: string) => {
     return Axios.put(

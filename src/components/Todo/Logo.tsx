@@ -5,7 +5,7 @@ const Logo = () => {
 }
 
 const Title = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
   text-align: center;
   font-size: 80px;
   color: rgba(255, 255, 255, 0.3);

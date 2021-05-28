@@ -26,5 +26,5 @@ export type User = {
 
 export type TaskResponse = {
   tasks: Task[]
-  count: CountTasks
+  count: number
 }

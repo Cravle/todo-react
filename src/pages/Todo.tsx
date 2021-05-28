@@ -16,7 +16,13 @@ function Alert(props: any) {
 const Todo: FC = () => {
   const query = new URLSearchParams(useLocation().search)
   const status = query.get('status') || 'all'
-  const { getTaskRequest, selectFilter, refreshTokenRequest } = useActions()
+  const page = query.get('page') || 1
+  const {
+    getTaskRequest,
+    selectFilter,
+    refreshTokenRequest,
+    setPage,
+  } = useActions()
   const [success, setSuccess] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
 
@@ -24,6 +30,11 @@ const Todo: FC = () => {
     selectFilter(status)
     getTaskRequest()
   }, [status])
+
+  useEffect(() => {
+    setPage(+page)
+    getTaskRequest()
+  }, [query, page])
 
   const handleOpenSuccess = () => setSuccess(true)
   const handleOpenError = () => setError(true)

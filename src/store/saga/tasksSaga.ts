@@ -1,6 +1,8 @@
 import { put, takeEvery, call, select } from 'redux-saga/effects'
+import { push } from 'connected-react-router'
+import queryString from 'query-string'
 
-import { getFilterType } from '@selectors//tasks'
+import { getFilterType, getPage, getTaskList } from '@selectors//tasks'
 import { Task, TaskResponse } from '@type//'
 import * as taskTypes from '@type//tasks'
 import { tasksAPI } from '@api//'
@@ -12,7 +14,8 @@ import { TASKS_UPDATED } from '@constants//'
 function* getTasksWorker() {
   try {
     const filterType: string = yield select(getFilterType)
-    const res: TaskResponse = yield call(tasksAPI.getTasks, filterType)
+    const page: number = yield select(getPage)
+    const res: TaskResponse = yield call(tasksAPI.getTasks, filterType, page)
 
     const taskList: Task[] = res.tasks.map((task: Task) => ({
       text: task.text,
@@ -84,6 +87,24 @@ function* createTasksWorker(action: taskTypes.CreateTaskRequest) {
 function* removeTasksWorker(action: taskTypes.RemoveTaskRequest) {
   try {
     yield call(tasksAPI.deleteTask, action.payload.id)
+
+    const tasksOnPage: Task[] = yield select(getTaskList)
+    const page: number = yield select(getPage)
+    const filterType: string = yield select(getFilterType)
+
+    const query = queryString.stringify(
+      {
+        page: page - 1,
+        status: filterType === 'all' ? null : filterType,
+      },
+      {
+        skipNull: true,
+      }
+    )
+
+    if (tasksOnPage.length === 1 && page !== 1) {
+      yield put(push({ search: query }))
+    }
 
     yield put(actions.createTaskSuccess())
 

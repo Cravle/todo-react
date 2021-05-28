@@ -15,10 +15,13 @@
     "formik": "^2.2.6",
     "history": "4.10.1",
     "immutability-helper": "^3.1.1",
+    "query-string": "^7.0.0",
     "react": "^17.0.2",
     "react-dnd": "^14.0.2",
     "react-dnd-html5-backend": "^14.0.0",
     "react-dom": "^17.0.2",
+    "react-paginate": "^7.1.3",
+    "react-pagination": "^1.0.0",
     "react-redux": "^7.2.4",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
@@ -67,6 +70,7 @@
     "@types/node": "^14.14.41",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
+    "@types/react-paginate": "^7.1.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "@types/redux": "^3.6.0",
@@ -92,6 +96,7 @@
     "eslint-plugin-react": "^7.23.2",
     "prettier": "^2.2.1",
     "react-app-rewire-alias": "^1.0.3",
-    "react-app-rewired": "^2.1.8"
+    "react-app-rewired": "^2.1.8",
+    "react-test-render": "^1.1.2"
   }
 }

@@ -1,15 +1,20 @@
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
+import { Pagination } from '@material-ui/lab'
+import queryString from 'query-string'
+import { useLocation, useHistory } from 'react-router'
 
 import useActions from '@hooks//useActions'
 import { TaskStatus } from '@type//'
 import {
   getCountTasks,
   getFilterType,
+  getPage,
   getTaskList,
 } from '@selectors//tasks'
+import { setPage } from '@store//actions/tasks'
 
 const ALL = 'all'
 const ACTIVE = 'active'
@@ -20,17 +25,17 @@ type Filters = { id: number; url: string; label: string }
 const filters: Filters[] = [
   {
     id: 1,
-    url: '/tasks',
+    url: '',
     label: ALL,
   },
   {
     id: 2,
-    url: '/tasks?status=active',
+    url: '?status=active',
     label: ACTIVE,
   },
   {
     id: 3,
-    url: '/tasks?status=completed',
+    url: '?status=completed',
     label: COMPLETED,
   },
 ]
@@ -40,14 +45,27 @@ const renderFilters = (
   filterType: string
 ) => {
   return filters.map((filter) => {
+    const query = queryString.stringify(
+      {
+        page: 1,
+        status: filter.label === ALL ? null : filter.label,
+      },
+      {
+        skipNull: true,
+      }
+    )
     return (
-      <MenuItem
-        isActive={filterType === filter.label}
-        key={filter.id}
-        onClick={() => handleClick(filter.label)}
-      >
-        <Link to={filter.url}>{filter.label}</Link>
-      </MenuItem>
+      <>
+        <MenuItem
+          isActive={filterType === filter.label}
+          key={filter.id}
+          onClick={() => handleClick(filter.label)}
+        >
+          <Link key={filter.id} to={{ search: query }}>
+            {filter.label}
+          </Link>
+        </MenuItem>
+      </>
     )
   })
 }
@@ -55,9 +73,32 @@ const renderFilters = (
 const NavMenu: FC = () => {
   const taskList = useSelector(getTaskList)
   const filterType = useSelector(getFilterType)
-  const { active, completed } = useSelector(getCountTasks)
+  const total = useSelector(getCountTasks)
+  const { setPage } = useActions()
+  const history = useHistory()
 
-  const { selectFilter, removeCompletedTaskRequest } = useActions()
+  const query = new URLSearchParams(useLocation().search)
+  const page = query.get('page') || 1
+
+  const completed = useMemo(() => {
+    return taskList.reduce(
+      (acc, { status }) =>
+        status !== COMPLETED
+          ? { ...acc }
+          : { ...acc, completedTask: acc.completedTask + 1 },
+      {
+        completedTask: 0,
+      }
+    ).completedTask
+  }, [taskList])
+
+  console.log(total)
+
+  const {
+    selectFilter,
+    removeCompletedTaskRequest,
+    getTaskRequest,
+  } = useActions()
 
   const handleClear = () => {
     const ids: (string | undefined)[] = taskList.map((task) => {
@@ -68,9 +109,44 @@ const NavMenu: FC = () => {
     removeCompletedTaskRequest(stringIds)
   }
 
-  const handleClick = (status: string) => () => selectFilter(status)
+  const handleClick = (status: string) => () => {
+    selectFilter(status)
+  }
+  const handlePage = (event: any, value: number) => {
+    const query = queryString.stringify(
+      {
+        page: value,
+        status: filterType === ALL ? null : filterType,
+      },
+      {
+        skipNull: true,
+      }
+    )
+    setPage(value)
+    history.push({
+      search: `?${query}`,
+    })
+    getTaskRequest()
+  }
 
-  if (!active && !completed) {
+  const pages = Math.ceil(total / 5)
+
+  if (pages && (page < 1 || page > pages)) {
+    const query2 = queryString.stringify(
+      {
+        page: 1,
+        status: filterType === ALL ? null : filterType,
+      },
+      {
+        skipNull: true,
+      }
+    )
+    history.push({
+      search: `?${query2}`,
+    })
+  }
+
+  if (!total) {
     return null
   }
 
@@ -79,7 +155,7 @@ const NavMenu: FC = () => {
       <Wrapper>
         <Inner>
           <Status>
-            <strong>{active}</strong> items left
+            <strong>{total}</strong> Total
           </Status>
           <Navbar>
             <Menu>{renderFilters(handleClick, filterType)}</Menu>
@@ -90,6 +166,18 @@ const NavMenu: FC = () => {
             </ClearCompletedButton>
           )}
         </Inner>
+        {pages > 1 && (
+          <PaginationWrapper>
+            <Pagination
+              count={pages}
+              page={+page}
+              color="primary"
+              onChange={handlePage}
+              showFirstButton
+              showLastButton
+            />
+          </PaginationWrapper>
+        )}
       </Wrapper>
     </>
   )
@@ -173,6 +261,12 @@ const ClearCompletedButton = styled.button`
   cursor: pointer;
   transition: background 0.1s linear;
   outline: none;
+`
+
+const PaginationWrapper = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 `
 
 export default NavMenu
